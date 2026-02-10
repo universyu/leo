@@ -1,0 +1,135 @@
+{
+  "summary": {
+    "overview": {
+      "total_packets_sent": 2740,
+      "total_packets_delivered": 2722,
+      "total_packets_dropped": 0,
+      "delivery_rate": 0.9934306569343065,
+      "loss_rate": 0.006569343065693456
+    },
+    "throughput": {
+      "avg_pps": 2721.999999999998,
+      "avg_mbps": 21.775999999999986
+    },
+    "delay": {
+      "avg_ms": 4.886899125342041,
+      "p50_ms": 4.79761567785051,
+      "p95_ms": 8.871125635550834,
+      "p99_ms": 9.80280108526771,
+      "max_ms": 9.999351616837515
+    },
+    "hop_count": {
+      "avg": 5.382806759735488,
+      "max": 10
+    },
+    "normal_traffic": {
+      "delivered": 2722,
+      "dropped": 0,
+      "delivery_rate": 1.0
+    },
+    "attack_traffic": {
+      "delivered": 0,
+      "dropped": 0,
+      "delivery_rate": 0.0
+    },
+    "link_utilization": {
+      "avg": 5.937777777777779e-05,
+      "max": 0.008,
+      "min": 0.0,
+      "p95": 0.0008,
+      "p99": 0.0008
+    }
+  },
+  "snapshots": [
+    {
+      "timestamp": 0.10000000000000007,
+      "packets_sent": 305,
+      "packets_delivered": 291,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9540983606557377,
+      "avg_delay": 4.905097972166357,
+      "throughput_pps": 2909.9999999999977
+    },
+    {
+      "timestamp": 0.20000000000000015,
+      "packets_sent": 550,
+      "packets_delivered": 537,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9763636363636363,
+      "avg_delay": 4.932970335207942,
+      "throughput_pps": 2684.999999999998
+    },
+    {
+      "timestamp": 0.3000000000000002,
+      "packets_sent": 832,
+      "packets_delivered": 813,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9771634615384616,
+      "avg_delay": 4.931820443105817,
+      "throughput_pps": 2709.999999999998
+    },
+    {
+      "timestamp": 0.4000000000000003,
+      "packets_sent": 1099,
+      "packets_delivered": 1076,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9790718835304822,
+      "avg_delay": 4.875163738300845,
+      "throughput_pps": 2689.999999999998
+    },
+    {
+      "timestamp": 0.5000000000000003,
+      "packets_sent": 1338,
+      "packets_delivered": 1322,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9880418535127056,
+      "avg_delay": 4.85865673023895,
+      "throughput_pps": 2643.999999999998
+    },
+    {
+      "timestamp": 0.6000000000000004,
+      "packets_sent": 1657,
+      "packets_delivered": 1643,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9915509957754979,
+      "avg_delay": 4.8879554951236495,
+      "throughput_pps": 2738.333333333331
+    },
+    {
+      "timestamp": 0.7000000000000005,
+      "packets_sent": 1935,
+      "packets_delivered": 1926,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9953488372093023,
+      "avg_delay": 4.905484630730305,
+      "throughput_pps": 2751.4285714285693
+    },
+    {
+      "timestamp": 0.8000000000000006,
+      "packets_sent": 2227,
+      "packets_delivered": 2216,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9950606196677144,
+      "avg_delay": 4.889779116590419,
+      "throughput_pps": 2769.9999999999977
+    },
+    {
+      "timestamp": 0.9000000000000007,
+      "packets_sent": 2459,
+      "packets_delivered": 2447,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9951199674664498,
+      "avg_delay": 4.911659319868789,
+      "throughput_pps": 2718.888888888887
+    },
+    {
+      "timestamp": 1.0000000000000007,
+      "packets_sent": 2740,
+      "packets_delivered": 2722,
+      "packets_dropped": 0,
+      "delivery_rate": 0.9934306569343065,
+      "avg_delay": 4.886899125342041,
+      "throughput_pps": 2721.999999999998
+    }
+  ]
+}
