@@ -33,6 +33,9 @@ from .routing import (
     ECMPRouter,
     LoadAwareRouter,
     RandomizedRouter,
+    KDSRouter,
+    KDGRouter,
+    KLORouter,
     create_router
 )
 
@@ -76,6 +79,9 @@ __all__ = [
     'ECMPRouter',
     'LoadAwareRouter',
     'RandomizedRouter',
+    'KDSRouter',
+    'KDGRouter',
+    'KLORouter',
     'create_router',
     # Statistics
     'StatisticsCollector',

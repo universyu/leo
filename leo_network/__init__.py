@@ -30,6 +30,9 @@ from .core import (
     ECMPRouter,
     LoadAwareRouter,
     RandomizedRouter,
+    KDSRouter,
+    KDGRouter,
+    KLORouter,
     create_router,
     # Statistics
     StatisticsCollector,
@@ -81,6 +84,9 @@ __all__ = [
     'ECMPRouter',
     'LoadAwareRouter',
     'RandomizedRouter',
+    'KDSRouter',
+    'KDGRouter',
+    'KLORouter',
     'create_router',
     # Core - Statistics
     'StatisticsCollector',

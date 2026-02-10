@@ -61,6 +61,9 @@ def main():
         ("ECMP", "ecmp", {"max_paths": 4}),
         ("Load-Aware", "load_aware", {"k": 3, "load_weight": 0.5}),
         ("Randomized", "random", {"k": 5, "temperature": 1.0}),
+        ("KDS (k=3)", "kds", {"k": 3, "disjoint_type": "link"}),
+        ("KDG (k=3)", "kdg", {"k": 3, "diversity_weight": 0.5}),
+        ("KLO (k=3)", "klo", {"k": 3, "load_threshold": 0.7}),
     ]
     
     results = {}
