@@ -34,6 +34,10 @@ from .core import (
     # Statistics
     StatisticsCollector,
     TimeSeriesData,
+    AttackCostCalculator,
+    compare_attack_costs,
+    compare_throughput_percentiles,
+    print_algorithm_comparison,
     # Simulator
     Simulator,
     # Visualization
@@ -81,6 +85,10 @@ __all__ = [
     # Core - Statistics
     'StatisticsCollector',
     'TimeSeriesData',
+    'AttackCostCalculator',
+    'compare_attack_costs',
+    'compare_throughput_percentiles',
+    'print_algorithm_comparison',
     # Core - Simulator
     'Simulator',
     # Core - Visualization

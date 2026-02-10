@@ -21,6 +21,8 @@ A comprehensive simulation framework for modeling **Low Earth Orbit (LEO) satell
 
 ### Analysis & Visualization
 - **Comprehensive Statistics**: Throughput, latency (avg/P50/P95/P99), packet loss, link utilization
+- **Attack Cost Metrics**: Measures attack efficiency (attack traffic / normal packet loss rate)
+- **5th Percentile Throughput**: Evaluates worst-case network performance under attack
 - **Comparative Analysis**: Before/after attack impact measurement
 - **Visualization Tools**: Network topology, traffic heatmaps, performance charts
 
@@ -46,7 +48,7 @@ graduate_code/
 ├── tests/                         # 🧪 Test suite
 │   ├── unit/                      # Unit tests
 │   │   ├── quick_test.py          # Quick functionality verification
-│   │   ├── debug_attack.py        # Attack module tests
+│   │   ├── debug_attack.py        # Attack module debugging
 │   │   └── debug_flows.py         # Traffic flow debugging
 │   └── integration/               # Integration tests
 │       ├── ddos_attack_simulation.py   # Full DDoS simulation scenarios
@@ -178,6 +180,15 @@ attack_stats = results['statistics']['attack_traffic']
 print(f"Normal Traffic Delivery: {normal_stats['delivery_rate']:.2%}")
 print(f"Attack Traffic Delivery: {attack_stats['delivery_rate']:.2%}")
 print(f"Average Latency Impact: +{normal_stats['latency_increase_ms']:.1f} ms")
+
+# Get attack cost metrics
+attack_cost = results['attack_cost']['cost_metrics']
+print(f"Attack Cost: {attack_cost['attack_cost']:.2f}")
+print(f"Normal Packet Loss Rate: {attack_cost['normal_loss_rate']:.2%}")
+
+# Get 5th percentile throughput (worst-case performance)
+tp = results['throughput_percentiles']
+print(f"5th Percentile Throughput: {tp['p5_pps']:.2f} pps")
 ```
 
 ### 3. Comparing Routing Algorithms Under Attack
@@ -252,7 +263,25 @@ sim.add_random_normal_flows(num_flows, rate_range=(100, 1000))
 sim.run(duration=1.0)
 sim.get_results() -> dict
 sim.print_results()
+
+# Attack cost analysis
+sim.get_attack_cost() -> dict           # Get attack cost metrics
+sim.get_attack_cost_summary() -> dict   # Get detailed cost summary
+sim.get_5th_percentile_throughput() -> dict  # Get worst-case throughput
 ```
+
+#### Attack Cost Metrics
+| Metric | Description | Formula |
+|--------|-------------|---------|
+| `attack_cost` | Attack efficiency measure | Attack Traffic (Mbps) / Normal Loss Rate |
+| `normalized_cost` | Cost to achieve target loss | Attack Traffic × (Target Rate / Actual Rate) |
+| `induced_loss_rate` | Loss caused by attack | Current Loss - Baseline Loss |
+
+#### 5th Percentile Throughput
+The 5th percentile throughput represents the worst-case network performance:
+- 95% of time windows have throughput **above** this value
+- Lower values indicate more severe attack impact
+- Used to evaluate network resilience under DDoS attacks
 
 ### Attacks Module (`leo_network.attacks`)
 
@@ -316,6 +345,16 @@ python tests/integration/router_comparison.py
 | Reflection Attack | 79.56% | 98.55% | +19.91% latency |
 | High-rate Flooding | 58.47% | 96.71% | +41.15% latency |
 
+### Routing Algorithm Comparison (Under Attack)
+
+| Algorithm | Attack Cost | Normal Loss Rate | 5% Throughput |
+|-----------|-------------|------------------|---------------|
+| ShortestPath | 11444.96 | 3.50% | Baseline |
+| ECMP | 11615.78 | 3.45% | +1.5% |
+| Randomized | 11791.77 | 3.40% | +2.3% |
+
+> **Note**: Higher attack cost = better defense (attacker needs more traffic to cause same damage)
+
 ---
 
 ## 📊 Output Examples
@@ -353,6 +392,8 @@ constellation = LEOConstellation(**STARLINK_SHELL1)
 
 ## 🗺️ Roadmap
 
+- [x] **Attack Cost Metrics**: Measure attack efficiency and defense effectiveness
+- [x] **5th Percentile Throughput**: Worst-case performance evaluation
 - [ ] **Advanced Defense Algorithms**: K-Bottleneck Minimize routing
 - [ ] **Dynamic Topology**: Time-varying satellite positions and link handoffs
 - [ ] **Parallel Simulation**: Multi-threaded execution for large constellations

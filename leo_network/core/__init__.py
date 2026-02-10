@@ -38,7 +38,11 @@ from .routing import (
 
 from .statistics import (
     StatisticsCollector,
-    TimeSeriesData
+    TimeSeriesData,
+    AttackCostCalculator,
+    compare_attack_costs,
+    compare_throughput_percentiles,
+    print_algorithm_comparison
 )
 
 from .simulator import Simulator
@@ -76,6 +80,10 @@ __all__ = [
     # Statistics
     'StatisticsCollector',
     'TimeSeriesData',
+    'AttackCostCalculator',
+    'compare_attack_costs',
+    'compare_throughput_percentiles',
+    'print_algorithm_comparison',
     # Simulator
     'Simulator',
     # Visualization

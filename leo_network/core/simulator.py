@@ -13,7 +13,7 @@ from tqdm import tqdm
 from .topology import LEOConstellation
 from .traffic import TrafficGenerator, Packet, PacketType
 from .routing import Router, ShortestPathRouter, create_router
-from .statistics import StatisticsCollector
+from .statistics import StatisticsCollector, AttackCostCalculator
 
 
 class Simulator:
@@ -60,6 +60,9 @@ class Simulator:
         
         # Initialize statistics collector
         self.stats = StatisticsCollector()
+        
+        # Initialize attack cost calculator
+        self.cost_calculator = AttackCostCalculator()
         
         # Simulation state
         self.current_time: float = 0.0
@@ -233,7 +236,10 @@ class Simulator:
             self._simulation_step()
         
         # Final snapshot
-        self.stats.take_snapshot(self.current_time)
+        # Calculate final window duration (time since last snapshot)
+        final_window_duration = self.current_time - self.last_snapshot_time
+        if final_window_duration > 0:
+            self.stats.take_snapshot(self.current_time, window_duration=final_window_duration)
         
         return self.stats
     
@@ -251,16 +257,20 @@ class Simulator:
         for packet in new_packets:
             if self.router.route_packet(packet):
                 self.packets_in_transit.append(packet)
-                self.stats.record_packet_sent(
-                    packet.size,
-                    is_attack=(packet.packet_type == PacketType.ATTACK)
-                )
+                is_attack = (packet.packet_type == PacketType.ATTACK)
+                self.stats.record_packet_sent(packet.size, is_attack=is_attack)
+                # Record to cost calculator
+                if is_attack:
+                    self.cost_calculator.record_attack_packet_sent(packet.size)
+                else:
+                    self.cost_calculator.record_normal_packet_sent(packet.size)
             else:
                 # No path found
-                self.stats.record_packet_dropped(
-                    packet.size,
-                    is_attack=(packet.packet_type == PacketType.ATTACK)
-                )
+                is_attack = (packet.packet_type == PacketType.ATTACK)
+                self.stats.record_packet_dropped(packet.size, is_attack=is_attack)
+                # Record to cost calculator
+                if not is_attack:
+                    self.cost_calculator.record_normal_packet_dropped(packet.size)
         
         # Process packets in transit
         self._process_packets()
@@ -268,7 +278,8 @@ class Simulator:
         # Record statistics periodically
         if self.current_time - self.last_snapshot_time >= self.snapshot_interval:
             self._record_network_state()
-            self.stats.take_snapshot(self.current_time)
+            # Pass window duration for correct throughput calculation
+            self.stats.take_snapshot(self.current_time, window_duration=self.snapshot_interval)
             self.last_snapshot_time = self.current_time
         
         # Advance time
@@ -293,15 +304,21 @@ class Simulator:
                 # Reached destination
                 packet.arrival_time = self.current_time
                 completed_packets.append(packet)
+                is_attack = (packet.packet_type == PacketType.ATTACK)
                 self.stats.record_packet_delivered(
                     packet.size,
                     delay=packet.get_delay() * 1000,  # Convert to ms
                     hop_count=packet.hops_taken,
-                    is_attack=(packet.packet_type == PacketType.ATTACK)
+                    is_attack=is_attack
                 )
                 self.traffic_generator.record_packet_delivery(
                     packet, self.current_time
                 )
+                # Record to cost calculator
+                if is_attack:
+                    self.cost_calculator.record_attack_packet_delivered(packet.size)
+                else:
+                    self.cost_calculator.record_normal_packet_delivered(packet.size)
                 continue
             
             # Try to forward packet
@@ -318,11 +335,12 @@ class Simulator:
             else:
                 # Link congested, drop packet
                 dropped_packets.append(packet)
-                self.stats.record_packet_dropped(
-                    packet.size,
-                    is_attack=(packet.packet_type == PacketType.ATTACK)
-                )
+                is_attack = (packet.packet_type == PacketType.ATTACK)
+                self.stats.record_packet_dropped(packet.size, is_attack=is_attack)
                 self.traffic_generator.record_packet_drop(packet)
+                # Record to cost calculator
+                if not is_attack:
+                    self.cost_calculator.record_normal_packet_dropped(packet.size)
         
         # Remove completed and dropped packets
         for packet in completed_packets + dropped_packets:
@@ -349,6 +367,7 @@ class Simulator:
         self.packets_in_transit = []
         self.last_snapshot_time = 0.0
         self.stats.reset()
+        self.cost_calculator.reset()
         self.traffic_generator.reset_all_stats()
         self.constellation.reset_all_stats()
     
@@ -358,6 +377,8 @@ class Simulator:
     
     def get_results(self) -> Dict:
         """Get comprehensive simulation results"""
+        stats_summary = self.stats.get_summary()
+        
         return {
             "simulation_config": {
                 "duration": self.current_time,
@@ -367,9 +388,20 @@ class Simulator:
                 "num_links": len(self.constellation.links),
                 "num_flows": len(self.traffic_generator.flows)
             },
-            "statistics": self.stats.get_summary(),
+            "statistics": stats_summary,
             "traffic": self.traffic_generator.get_aggregate_stats(),
-            "network": self.constellation.get_network_stats()
+            "network": self.constellation.get_network_stats(),
+            "attack_cost": self.cost_calculator.get_summary(self.current_time),
+            "throughput_percentiles": {
+                "p5_pps": stats_summary["throughput"]["p5_pps"],
+                "p5_mbps": stats_summary["throughput"]["p5_mbps"],
+                "p10_pps": stats_summary["throughput"]["p10_pps"],
+                "p10_mbps": stats_summary["throughput"]["p10_mbps"],
+                "p50_pps": stats_summary["throughput"]["p50_pps"],
+                "p50_mbps": stats_summary["throughput"]["p50_mbps"],
+                "avg_pps": stats_summary["throughput"]["avg_pps"],
+                "avg_mbps": stats_summary["throughput"]["avg_mbps"],
+            }
         }
     
     def print_results(self):
@@ -386,12 +418,66 @@ class Simulator:
         
         self.stats.print_summary()
         
+        print("\n--- Throughput Percentiles (Key Metric) ---")
+        tp = results["throughput_percentiles"]
+        print(f"  5th Percentile:  {tp['p5_pps']:.2f} pps ({tp['p5_mbps']:.4f} Mbps) [Worst-case]")
+        print(f"  10th Percentile: {tp['p10_pps']:.2f} pps ({tp['p10_mbps']:.4f} Mbps)")
+        print(f"  50th Percentile: {tp['p50_pps']:.2f} pps ({tp['p50_mbps']:.4f} Mbps) [Median]")
+        print(f"  Average:         {tp['avg_pps']:.2f} pps ({tp['avg_mbps']:.4f} Mbps)")
+        
         print("\n--- Traffic Summary ---")
         traffic = results["traffic"]
         print(f"  Normal flows: {traffic['num_normal_flows']}")
         print(f"  Attack flows: {traffic['num_attack_flows']}")
         print(f"  Normal delivery rate: {traffic['normal_delivery_rate']:.4f}")
         print(f"  Attack delivery rate: {traffic['attack_delivery_rate']:.4f}")
+        
+        # Print attack cost analysis
+        self.cost_calculator.print_summary(self.current_time)
+    
+    def set_baseline_loss_rate(self, loss_rate: float):
+        """
+        Set baseline loss rate for attack cost calculation
+        
+        Should be called with the loss rate from a no-attack simulation.
+        
+        Args:
+            loss_rate: Normal packet loss rate without attack
+        """
+        self.cost_calculator.set_baseline_loss_rate(loss_rate)
+    
+    def get_attack_cost(self) -> float:
+        """
+        Get current attack cost
+        
+        Returns:
+            Attack cost value (higher indicates better defense)
+        """
+        return self.cost_calculator.calculate_attack_cost(self.current_time)
+    
+    def get_attack_cost_summary(self) -> Dict:
+        """
+        Get attack cost summary
+        
+        Returns:
+            Dictionary with attack cost metrics
+        """
+        return self.cost_calculator.get_summary(self.current_time)
+    
+    def get_5th_percentile_throughput(self) -> Dict:
+        """
+        Get 5th percentile throughput metrics
+        
+        This represents the worst-case network performance.
+        95% of the time, throughput is higher than this value.
+        
+        Returns:
+            Dictionary with 5th percentile throughput in pps and Mbps
+        """
+        return {
+            "p5_pps": self.stats.get_5th_percentile_throughput_pps(),
+            "p5_mbps": self.stats.get_5th_percentile_throughput_mbps()
+        }
 
 
 def run_basic_simulation(
