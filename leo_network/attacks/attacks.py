@@ -20,6 +20,7 @@ import random
 import math
 
 from ..core.traffic import TrafficGenerator, Flow, Packet, PacketType, TrafficPattern
+from ..core.routing import Router, ShortestPathRouter, KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter
 
 
 class AttackType(Enum):
@@ -891,3 +892,500 @@ class DDoSAttackGenerator:
             }
         
         return summary
+
+    # ===== Router-Aware Vulnerability Analysis & Targeted ISL Attack =====
+
+    def find_most_vulnerable_isl_for_shortest_path(
+        self,
+        router: Router,
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Find the most vulnerable ISL link for ShortestPath routing.
+        
+        ShortestPath always uses a single fixed path. The most critical link
+        is the one traversed by the most flows (highest betweenness).
+        
+        Args:
+            router: ShortestPathRouter instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        import networkx as nx
+        link_usage: Dict[Tuple[str, str], int] = {}
+        link_flows: Dict[Tuple[str, str], List[Tuple[str, str]]] = {}
+        nodes = list(self.constellation.satellites.keys())
+        
+        sampled_pairs = []
+        for _ in range(num_sample_pairs):
+            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            sampled_pairs.append((src, dst))
+        
+        for src, dst in sampled_pairs:
+            path = router.compute_path(src, dst)
+            if path and len(path) > 1:
+                for i in range(len(path) - 1):
+                    link_key = (path[i], path[i+1])
+                    link_usage[link_key] = link_usage.get(link_key, 0) + 1
+                    if link_key not in link_flows:
+                        link_flows[link_key] = []
+                    link_flows[link_key].append((src, dst))
+        
+        if not link_usage:
+            return ("", "", 0, {})
+        
+        # Find the link with highest usage (most flows traverse it)
+        most_used_link = max(link_usage, key=link_usage.get)
+        traversal_count = link_usage[most_used_link]
+        
+        analysis = {
+            "strategy": "highest_betweenness",
+            "reason": "ShortestPath uses single deterministic path; "
+                      "the link with highest betweenness centrality is the bottleneck",
+            "link": most_used_link,
+            "traversal_count": traversal_count,
+            "total_sampled_pairs": num_sample_pairs,
+            "affected_flow_ratio": traversal_count / num_sample_pairs,
+            "top_5_links": sorted(link_usage.items(), key=lambda x: -x[1])[:5]
+        }
+        
+        return (most_used_link[0], most_used_link[1], traversal_count, analysis)
+
+    def find_most_vulnerable_isl_for_ksp(
+        self,
+        router: 'KShortestPathsRouter',
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Find the most vulnerable ISL link for K-Shortest-Paths (KSP) routing.
+        
+        KSP computes K shortest simple paths that CAN overlap (share links/nodes).
+        Unlike KDS, the paths are NOT disjoint - they often share many common links
+        especially near the source and destination. This overlap is KSP's weakness:
+        a link that appears on multiple of the K shortest paths is a high-value target
+        because attacking it disrupts multiple backup routes simultaneously.
+        
+        Strategy: Find the link that appears on the most K-shortest paths across
+        all sampled src-dst pairs (weighted by how many of the K paths it appears on
+        for each pair - a link appearing on all K paths for a pair is devastating).
+        
+        Args:
+            router: KShortestPathsRouter instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        link_usage: Dict[Tuple[str, str], int] = {}  # Total appearances across all paths
+        # Track for how many pairs this link appears on ALL K paths (complete coverage)
+        link_full_coverage_count: Dict[Tuple[str, str], int] = {}
+        # Track per-pair how many of K paths use this link
+        link_pair_overlap: Dict[Tuple[str, str], List[int]] = {}
+        nodes = list(self.constellation.satellites.keys())
+        
+        sampled_pairs = []
+        for _ in range(num_sample_pairs):
+            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            sampled_pairs.append((src, dst))
+        
+        for src, dst in sampled_pairs:
+            paths = router.compute_k_paths(src, dst)
+            if not paths:
+                continue
+            
+            num_paths = len(paths)
+            # Count how many paths each link appears in for THIS pair
+            pair_link_count: Dict[Tuple[str, str], int] = {}
+            
+            for path in paths:
+                for i in range(len(path) - 1):
+                    link_key = (path[i], path[i+1])
+                    link_usage[link_key] = link_usage.get(link_key, 0) + 1
+                    pair_link_count[link_key] = pair_link_count.get(link_key, 0) + 1
+            
+            for link_key, count_in_pair in pair_link_count.items():
+                if link_key not in link_pair_overlap:
+                    link_pair_overlap[link_key] = []
+                link_pair_overlap[link_key].append(count_in_pair)
+                
+                # If this link appears on ALL K paths for this pair, it's devastating
+                if count_in_pair >= num_paths:
+                    link_full_coverage_count[link_key] = \
+                        link_full_coverage_count.get(link_key, 0) + 1
+        
+        if not link_usage:
+            return ("", "", 0, {})
+        
+        # Score: prioritize links that appear on ALL K paths for many pairs,
+        # then by total usage. A link on all K shortest paths for a pair means
+        # that pair has NO alternative route that avoids this link.
+        combined_score: Dict[Tuple[str, str], float] = {}
+        for link_key in link_usage:
+            full_cov = link_full_coverage_count.get(link_key, 0)
+            total_use = link_usage[link_key]
+            # Full coverage is 5x more important than mere usage
+            combined_score[link_key] = full_cov * 5 + total_use
+        
+        most_vulnerable_link = max(combined_score, key=combined_score.get)
+        traversal_count = link_usage[most_vulnerable_link]
+        full_cov = link_full_coverage_count.get(most_vulnerable_link, 0)
+        
+        analysis = {
+            "strategy": "k_path_overlap_bottleneck",
+            "reason": "KSP computes K shortest paths that CAN overlap; the link appearing "
+                      "on ALL K paths for the most src-dst pairs is the bottleneck because "
+                      "attacking it removes ALL alternative routes for those pairs",
+            "link": most_vulnerable_link,
+            "traversal_count": traversal_count,
+            "full_coverage_pairs": full_cov,
+            "combined_score": combined_score[most_vulnerable_link],
+            "total_sampled_pairs": num_sample_pairs,
+            "k_paths": router.k,
+            "affected_flow_ratio": traversal_count / max(1, num_sample_pairs * router.k),
+            "top_5_links": sorted(combined_score.items(), key=lambda x: -x[1])[:5]
+        }
+        
+        return (most_vulnerable_link[0], most_vulnerable_link[1], traversal_count, analysis)
+
+    def find_most_vulnerable_isl_for_kds(
+        self,
+        router: 'KDSRouter',
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Find the most vulnerable ISL link for KDS routing.
+        
+        KDS computes K link/node-disjoint paths but caches them statically.
+        The weakness is that the first (shortest) path is still most likely used.
+        Also, if we can find a link that appears across multiple disjoint path sets
+        (different src-dst pairs share it), that link is critical.
+        We find the link with highest aggregate usage across ALL K disjoint paths.
+        
+        Args:
+            router: KDSRouter instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        link_usage: Dict[Tuple[str, str], int] = {}
+        nodes = list(self.constellation.satellites.keys())
+        
+        sampled_pairs = []
+        for _ in range(num_sample_pairs):
+            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            sampled_pairs.append((src, dst))
+        
+        for src, dst in sampled_pairs:
+            paths = router.compute_k_disjoint_paths(src, dst)
+            for path in paths:
+                for i in range(len(path) - 1):
+                    link_key = (path[i], path[i+1])
+                    link_usage[link_key] = link_usage.get(link_key, 0) + 1
+        
+        if not link_usage:
+            return ("", "", 0, {})
+        
+        most_used_link = max(link_usage, key=link_usage.get)
+        traversal_count = link_usage[most_used_link]
+        
+        analysis = {
+            "strategy": "cross_disjoint_set_bottleneck",
+            "reason": "KDS caches K disjoint paths statically; link appearing in "
+                      "most disjoint path sets across different flows is the bottleneck",
+            "link": most_used_link,
+            "traversal_count": traversal_count,
+            "total_sampled_pairs": num_sample_pairs,
+            "k_paths": router.k,
+            "disjoint_type": router.disjoint_type,
+            "top_5_links": sorted(link_usage.items(), key=lambda x: -x[1])[:5]
+        }
+        
+        return (most_used_link[0], most_used_link[1], traversal_count, analysis)
+
+    def find_most_vulnerable_isl_for_kdg(
+        self,
+        router: 'KDGRouter',
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Find the most vulnerable ISL link for KDG routing.
+        
+        KDG maximizes geographic diversity between paths. Its weakness is that
+        inter-plane ISL links at the boundary of orbital planes have limited 
+        alternatives. Paths still need to cross between planes via inter-plane ISLs,
+        and geodiversity makes paths spread across more inter-plane links - but the
+        ones near "bridge" positions are still critical. We find the most-used
+        inter-plane ISL as the attack target.
+        
+        Args:
+            router: KDGRouter instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        link_usage: Dict[Tuple[str, str], int] = {}
+        inter_plane_usage: Dict[Tuple[str, str], int] = {}
+        nodes = list(self.constellation.satellites.keys())
+        
+        sampled_pairs = []
+        for _ in range(num_sample_pairs):
+            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            sampled_pairs.append((src, dst))
+        
+        for src, dst in sampled_pairs:
+            paths = router.compute_k_geodiverse_paths(src, dst)
+            for path in paths:
+                for i in range(len(path) - 1):
+                    link_key = (path[i], path[i+1])
+                    link_usage[link_key] = link_usage.get(link_key, 0) + 1
+                    
+                    # Check if this is an inter-plane link
+                    src_node = path[i]
+                    dst_node = path[i+1]
+                    if src_node.startswith("SAT_") and dst_node.startswith("SAT_"):
+                        src_plane = int(src_node.split("_")[1])
+                        dst_plane = int(dst_node.split("_")[1])
+                        if src_plane != dst_plane:
+                            inter_plane_usage[link_key] = inter_plane_usage.get(link_key, 0) + 1
+        
+        # Prefer to attack the most critical inter-plane link
+        # (geodiverse paths spread across planes, inter-plane links are bottlenecks)
+        target_dict = inter_plane_usage if inter_plane_usage else link_usage
+        
+        if not target_dict:
+            return ("", "", 0, {})
+        
+        most_used_link = max(target_dict, key=target_dict.get)
+        traversal_count = target_dict[most_used_link]
+        
+        analysis = {
+            "strategy": "inter_plane_bridge_bottleneck",
+            "reason": "KDG spreads paths geographically across planes; "
+                      "inter-plane ISL links become critical bridges that "
+                      "geodiverse paths must still traverse",
+            "link": most_used_link,
+            "traversal_count": traversal_count,
+            "total_sampled_pairs": num_sample_pairs,
+            "k_paths": router.k,
+            "diversity_weight": router.diversity_weight,
+            "inter_plane_links_found": len(inter_plane_usage),
+            "top_5_links": sorted(target_dict.items(), key=lambda x: -x[1])[:5]
+        }
+        
+        return (most_used_link[0], most_used_link[1], traversal_count, analysis)
+
+    def find_most_vulnerable_isl_for_klo(
+        self,
+        router: 'KLORouter',
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Find the most vulnerable ISL link for KLO routing.
+        
+        KLO dynamically switches paths based on load. The weakness is that once
+        the primary path is congested, traffic shifts to alternative paths. If we
+        can identify AND attack links on ALL K disjoint paths simultaneously,
+        KLO has no escape route. We find the set of links covering all disjoint
+        paths, and target the one that disrupts the most alternative routes.
+        
+        For single-link attack, we find the link that appears across the most
+        distinct disjoint path sets, which forces KLO to use fewer alternatives.
+        
+        Args:
+            router: KLORouter instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        link_usage: Dict[Tuple[str, str], int] = {}
+        # Track how many DISTINCT path sets each link appears in
+        link_path_set_count: Dict[Tuple[str, str], int] = {}
+        nodes = list(self.constellation.satellites.keys())
+        
+        sampled_pairs = []
+        for _ in range(num_sample_pairs):
+            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            sampled_pairs.append((src, dst))
+        
+        for src, dst in sampled_pairs:
+            paths = router.get_all_disjoint_paths(src, dst)
+            links_in_this_set = set()
+            for path in paths:
+                for i in range(len(path) - 1):
+                    link_key = (path[i], path[i+1])
+                    link_usage[link_key] = link_usage.get(link_key, 0) + 1
+                    links_in_this_set.add(link_key)
+            
+            # Count distinct path sets per link
+            for link_key in links_in_this_set:
+                link_path_set_count[link_key] = link_path_set_count.get(link_key, 0) + 1
+        
+        if not link_path_set_count:
+            return ("", "", 0, {})
+        
+        # For KLO: the link that appears in most disjoint path sets,
+        # weighted by total usage (to catch the link that would cause most
+        # re-routing cascades)
+        combined_score: Dict[Tuple[str, str], float] = {}
+        for link_key in link_usage:
+            pset_count = link_path_set_count.get(link_key, 0)
+            usage = link_usage[link_key]
+            # Score = path_set_coverage * usage (combined importance)
+            combined_score[link_key] = pset_count * 2 + usage
+        
+        most_used_link = max(combined_score, key=combined_score.get)
+        traversal_count = link_usage[most_used_link]
+        
+        analysis = {
+            "strategy": "load_cascade_bottleneck",
+            "reason": "KLO dynamically switches paths based on load; attacking the link "
+                      "that appears in most disjoint path sets forces cascading re-routing "
+                      "and eventual congestion on all alternatives",
+            "link": most_used_link,
+            "traversal_count": traversal_count,
+            "path_set_coverage": link_path_set_count.get(most_used_link, 0),
+            "combined_score": combined_score[most_used_link],
+            "total_sampled_pairs": num_sample_pairs,
+            "k_paths": router.kds_router.k,
+            "load_threshold": router.load_threshold,
+            "top_5_links": sorted(combined_score.items(), key=lambda x: -x[1])[:5]
+        }
+        
+        return (most_used_link[0], most_used_link[1], traversal_count, analysis)
+
+    def find_vulnerable_isl_for_router(
+        self,
+        router: Router,
+        num_sample_pairs: int = 200
+    ) -> Tuple[str, str, int, Dict]:
+        """
+        Automatically dispatch to the correct vulnerability finder based on router type.
+        
+        Args:
+            router: Any Router instance
+            num_sample_pairs: Number of random source-destination pairs to sample
+            
+        Returns:
+            Tuple of (src_node, dst_node, traversal_count, analysis_dict)
+        """
+        if isinstance(router, KLORouter):
+            return self.find_most_vulnerable_isl_for_klo(router, num_sample_pairs)
+        elif isinstance(router, KDGRouter):
+            return self.find_most_vulnerable_isl_for_kdg(router, num_sample_pairs)
+        elif isinstance(router, KDSRouter):
+            return self.find_most_vulnerable_isl_for_kds(router, num_sample_pairs)
+        elif isinstance(router, KShortestPathsRouter):
+            return self.find_most_vulnerable_isl_for_ksp(router, num_sample_pairs)
+        else:
+            # Default: treat as shortest path (single path)
+            return self.find_most_vulnerable_isl_for_shortest_path(router, num_sample_pairs)
+
+    def create_targeted_isl_congestion_attack(
+        self,
+        target_link: Tuple[str, str],
+        router: Router,
+        num_attackers: int = 30,
+        total_rate: float = 80000.0,
+        packet_size: int = 1500,
+        start_time: float = 0.0,
+        duration: float = -1.0
+    ) -> str:
+        """
+        Create a targeted attack designed to congest a specific ISL link.
+        
+        This attack selects source-destination pairs whose routes (as computed
+        by the given router) traverse the target link, ensuring maximum traffic
+        concentration on that link.
+        
+        Args:
+            target_link: (src_node, dst_node) tuple of the target ISL link
+            router: Router instance to compute paths through the target link
+            num_attackers: Number of attack flows to create
+            total_rate: Total attack rate in packets/s
+            packet_size: Attack packet size in bytes
+            start_time: Attack start time
+            duration: Attack duration (-1 for infinite)
+            
+        Returns:
+            Attack ID
+        """
+        link_src, link_dst = target_link
+        nodes = list(self.constellation.satellites.keys())
+        
+        # Find source-destination pairs that route through the target link
+        passing_pairs: List[Tuple[str, str, List[str]]] = []
+        
+        for src in nodes:
+            if len(passing_pairs) >= num_attackers * 3:
+                break
+            for dst in nodes:
+                if src == dst:
+                    continue
+                if len(passing_pairs) >= num_attackers * 3:
+                    break
+                    
+                path = router.compute_path(src, dst)
+                if path and len(path) > 1:
+                    # Check if path traverses the target link
+                    for i in range(len(path) - 1):
+                        if (path[i] == link_src and path[i+1] == link_dst) or \
+                           (path[i] == link_dst and path[i+1] == link_src):
+                            passing_pairs.append((src, dst, path))
+                            break
+        
+        if not passing_pairs:
+            # Fallback: use nodes near the link endpoints
+            print(f"  [WARNING] No direct path through {target_link} found, using proximity attack")
+            return self.create_bottleneck_attack(
+                target_links=[target_link],
+                num_attackers=num_attackers,
+                total_rate=total_rate,
+                start_time=start_time,
+                duration=duration
+            )
+        
+        # Select the best attacker pairs (prefer diverse sources for distributed attack)
+        self.rng.shuffle(passing_pairs)
+        selected_pairs = passing_pairs[:num_attackers]
+        
+        attack_id = f"attack_targeted_isl_{self.attack_counter}"
+        self.attack_counter += 1
+        
+        config = AttackConfig(
+            attack_type=AttackType.LINK_TARGETED,
+            targets=[link_src, link_dst],
+            num_attackers=len(selected_pairs),
+            total_rate=total_rate,
+            packet_size=packet_size,
+            start_time=start_time,
+            duration=duration,
+            strategy=AttackStrategy.PATH_ALIGNED,
+            target_links=[target_link]
+        )
+        
+        self.active_attacks[attack_id] = config
+        self.attack_metrics[attack_id] = AttackMetrics()
+        self.attack_flows[attack_id] = []
+        
+        rate_per_attacker = total_rate / len(selected_pairs)
+        
+        for i, (src, dst, path) in enumerate(selected_pairs):
+            flow = AttackFlow(
+                flow_id=f"{attack_id}_flow_{i}",
+                source=src,
+                destination=dst,
+                rate=rate_per_attacker,
+                packet_size=packet_size,
+                attack_type=AttackType.LINK_TARGETED,
+                start_time=start_time,
+                duration=duration
+            )
+            self.attack_flows[attack_id].append(flow)
+            self.traffic_generator.add_flow(flow)
+        
+        return attack_id
