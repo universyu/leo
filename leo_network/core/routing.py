@@ -637,6 +637,10 @@ class KRandRouter(Router):
       - P(k-DG) = a2 - a1
       - P(k-DS) = a3 - a2  
       - P(k-LO) = 1 - a3
+    
+    Default weights are optimized via Bayesian Optimization (Stackelberg game)
+    to maximize global normal P5 throughput under DDoS attack:
+      - P(k-SP) = 0.2318, P(k-DG) = 0.4937, P(k-DS) = 0.1011, P(k-LO) = 0.1735
     """
     
     def __init__(
@@ -653,7 +657,7 @@ class KRandRouter(Router):
             constellation: LEO constellation topology
             k: Number of paths for each sub-algorithm
             weights: Dict of algorithm weights, e.g. {"ksp": 0.25, "kdg": 0.25, "kds": 0.25, "klo": 0.25}
-                     If None, uses equal weights (0.25 each)
+                     If None, uses optimized weights from Bayesian Optimization
             seed: Random seed for reproducibility
         """
         super().__init__(constellation)
@@ -661,9 +665,10 @@ class KRandRouter(Router):
         self.name = f"KRand{k}Router"
         self.rng = np.random.default_rng(seed)
         
-        # Default: equal weights for all 4 algorithms
+        # Default: optimized weights via Bayesian Optimization (Stackelberg game)
+        # Maximizes global normal P5 throughput under optimal DDoS attack
         if weights is None:
-            self.weights = {"ksp": 0.25, "kdg": 0.25, "kds": 0.25, "klo": 0.25}
+            self.weights = {"ksp": 0.2318, "kdg": 0.4937, "kds": 0.1011, "klo": 0.1735}
         else:
             self.weights = weights
         

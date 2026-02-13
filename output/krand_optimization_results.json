@@ -1,0 +1,453 @@
+{
+  "config": {
+    "target_isl": "SAT_4_2 <-> SAT_4_3",
+    "isl_bandwidth_mbps": 100.0,
+    "packet_size_bytes": 1000,
+    "num_normal_flows": 20,
+    "normal_rate_range_pps": [
+      50,
+      200
+    ],
+    "simulation_duration_s": 2.0,
+    "min_weight": 0.05,
+    "seed": 42
+  },
+  "phase1": {
+    "time_s": 0.31,
+    "grid_search": {
+      "weights": {
+        "ksp": 0.05,
+        "kdg": 0.05,
+        "kds": 0.05,
+        "klo": 0.85
+      },
+      "score": -17.866223
+    },
+    "slsqp": {
+      "weights": {
+        "ksp": 0.05,
+        "kdg": 0.05,
+        "kds": 0.05,
+        "klo": 0.85
+      },
+      "score": -17.866223
+    },
+    "differential_evolution": {
+      "weights": {
+        "ksp": 0.05,
+        "kdg": 0.05,
+        "kds": 0.05,
+        "klo": 0.85
+      },
+      "score": -17.866223
+    },
+    "best_method": "Grid",
+    "best_weights": {
+      "ksp": 0.05,
+      "kdg": 0.05,
+      "kds": 0.05,
+      "klo": 0.85
+    }
+  },
+  "phase2": {
+    "time_s": 3964.56,
+    "n_evaluations": 20,
+    "best_weights": {
+      "ksp": 0.231791,
+      "kdg": 0.493668,
+      "kds": 0.101054,
+      "klo": 0.173487
+    },
+    "best_p5_pps": 2315.5,
+    "top5_results": [
+      {
+        "rank": 1,
+        "weights": {
+          "ksp": 0.2318,
+          "kdg": 0.4937,
+          "kds": 0.1011,
+          "klo": 0.1735
+        },
+        "p5_global_normal_pps": 2315.5,
+        "p5_target_isl_pps": 88.5,
+        "normal_dr": 0.931041
+      },
+      {
+        "rank": 2,
+        "weights": {
+          "ksp": 0.3406,
+          "kdg": 0.1294,
+          "kds": 0.48,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2239.5,
+        "p5_target_isl_pps": 60.0,
+        "normal_dr": 0.938662
+      },
+      {
+        "rank": 3,
+        "weights": {
+          "ksp": 0.2109,
+          "kdg": 0.1472,
+          "kds": 0.592,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2229.5,
+        "p5_target_isl_pps": 49.5,
+        "normal_dr": 0.935022
+      },
+      {
+        "rank": 4,
+        "weights": {
+          "ksp": 0.3619,
+          "kdg": 0.1999,
+          "kds": 0.3882,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2228.0,
+        "p5_target_isl_pps": 79.5,
+        "normal_dr": 0.944401
+      },
+      {
+        "rank": 5,
+        "weights": {
+          "ksp": 0.3875,
+          "kdg": 0.2307,
+          "kds": 0.3318,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2227.5,
+        "p5_target_isl_pps": 70.0,
+        "normal_dr": 0.940342
+      }
+    ],
+    "full_history": [
+      {
+        "iteration": 1,
+        "weights": {
+          "ksp": 0.3834,
+          "kdg": 0.1154,
+          "kds": 0.4512,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2136.5,
+        "normal_dr": 0.945356,
+        "total_attack_mbps": 2041.31,
+        "sim_time_s": 148.6
+      },
+      {
+        "iteration": 2,
+        "weights": {
+          "ksp": 0.3572,
+          "kdg": 0.0443,
+          "kds": 0.5543,
+          "klo": 0.0443
+        },
+        "p5_global_normal_pps": 2218.5,
+        "normal_dr": 0.938903,
+        "total_attack_mbps": 2020.86,
+        "sim_time_s": 147.7
+      },
+      {
+        "iteration": 3,
+        "weights": {
+          "ksp": 0.4443,
+          "kdg": 0.4629,
+          "kds": 0.0464,
+          "klo": 0.0464
+        },
+        "p5_global_normal_pps": 2119.0,
+        "normal_dr": 0.928857,
+        "total_attack_mbps": 2241.67,
+        "sim_time_s": 150.4
+      },
+      {
+        "iteration": 4,
+        "weights": {
+          "ksp": 0.2109,
+          "kdg": 0.1472,
+          "kds": 0.592,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2229.5,
+        "normal_dr": 0.935022,
+        "total_attack_mbps": 2055.82,
+        "sim_time_s": 156.2
+      },
+      {
+        "iteration": 5,
+        "weights": {
+          "ksp": 0.3224,
+          "kdg": 0.4655,
+          "kds": 0.1621,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2156.5,
+        "normal_dr": 0.929081,
+        "total_attack_mbps": 2231.58,
+        "sim_time_s": 159.2
+      },
+      {
+        "iteration": 6,
+        "weights": {
+          "ksp": 0.2318,
+          "kdg": 0.4937,
+          "kds": 0.1011,
+          "klo": 0.1735
+        },
+        "p5_global_normal_pps": 2315.5,
+        "normal_dr": 0.931041,
+        "total_attack_mbps": 2236.25,
+        "sim_time_s": 203.2
+      },
+      {
+        "iteration": 7,
+        "weights": {
+          "ksp": 0.3875,
+          "kdg": 0.2307,
+          "kds": 0.3318,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2227.5,
+        "normal_dr": 0.940342,
+        "total_attack_mbps": 1931.43,
+        "sim_time_s": 135.4
+      },
+      {
+        "iteration": 8,
+        "weights": {
+          "ksp": 0.05,
+          "kdg": 0.05,
+          "kds": 0.05,
+          "klo": 0.85
+        },
+        "p5_global_normal_pps": 2217.5,
+        "normal_dr": 0.936486,
+        "total_attack_mbps": 2252.64,
+        "sim_time_s": 475.1
+      },
+      {
+        "iteration": 9,
+        "weights": {
+          "ksp": 0.3101,
+          "kdg": 0.0535,
+          "kds": 0.5864,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2154.2222,
+        "normal_dr": 0.937228,
+        "total_attack_mbps": 2016.99,
+        "sim_time_s": 151.4
+      },
+      {
+        "iteration": 10,
+        "weights": {
+          "ksp": 0.3974,
+          "kdg": 0.4815,
+          "kds": 0.0711,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2215.0,
+        "normal_dr": 0.932645,
+        "total_attack_mbps": 2247.15,
+        "sim_time_s": 154.7
+      },
+      {
+        "iteration": 11,
+        "weights": {
+          "ksp": 0.4096,
+          "kdg": 0.3082,
+          "kds": 0.0671,
+          "klo": 0.2151
+        },
+        "p5_global_normal_pps": 2184.5,
+        "normal_dr": 0.935342,
+        "total_attack_mbps": 1918.82,
+        "sim_time_s": 170.5
+      },
+      {
+        "iteration": 12,
+        "weights": {
+          "ksp": 0.3015,
+          "kdg": 0.3934,
+          "kds": 0.0528,
+          "klo": 0.2522
+        },
+        "p5_global_normal_pps": 2129.5,
+        "normal_dr": 0.928903,
+        "total_attack_mbps": 2098.06,
+        "sim_time_s": 209.6
+      },
+      {
+        "iteration": 13,
+        "weights": {
+          "ksp": 0.2873,
+          "kdg": 0.468,
+          "kds": 0.1031,
+          "klo": 0.1416
+        },
+        "p5_global_normal_pps": 2128.5,
+        "normal_dr": 0.930338,
+        "total_attack_mbps": 2227.98,
+        "sim_time_s": 189.6
+      },
+      {
+        "iteration": 14,
+        "weights": {
+          "ksp": 0.3619,
+          "kdg": 0.1999,
+          "kds": 0.3882,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2228.0,
+        "normal_dr": 0.944401,
+        "total_attack_mbps": 2056.95,
+        "sim_time_s": 149.1
+      },
+      {
+        "iteration": 15,
+        "weights": {
+          "ksp": 0.1796,
+          "kdg": 0.4574,
+          "kds": 0.0886,
+          "klo": 0.2744
+        },
+        "p5_global_normal_pps": 2145.0,
+        "normal_dr": 0.928972,
+        "total_attack_mbps": 2219.26,
+        "sim_time_s": 240.3
+      },
+      {
+        "iteration": 16,
+        "weights": {
+          "ksp": 0.192,
+          "kdg": 0.5426,
+          "kds": 0.106,
+          "klo": 0.1595
+        },
+        "p5_global_normal_pps": 2109.5,
+        "normal_dr": 0.930816,
+        "total_attack_mbps": 2244.73,
+        "sim_time_s": 199.6
+      },
+      {
+        "iteration": 17,
+        "weights": {
+          "ksp": 0.0892,
+          "kdg": 0.3285,
+          "kds": 0.4948,
+          "klo": 0.0875
+        },
+        "p5_global_normal_pps": 2212.0,
+        "normal_dr": 0.926897,
+        "total_attack_mbps": 2205.07,
+        "sim_time_s": 188.1
+      },
+      {
+        "iteration": 18,
+        "weights": {
+          "ksp": 0.3406,
+          "kdg": 0.1294,
+          "kds": 0.48,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2239.5,
+        "normal_dr": 0.938662,
+        "total_attack_mbps": 2045.12,
+        "sim_time_s": 150.5
+      },
+      {
+        "iteration": 19,
+        "weights": {
+          "ksp": 0.3115,
+          "kdg": 0.1209,
+          "kds": 0.5176,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2188.5,
+        "normal_dr": 0.938615,
+        "total_attack_mbps": 2040.97,
+        "sim_time_s": 153.2
+      },
+      {
+        "iteration": 20,
+        "weights": {
+          "ksp": 0.1252,
+          "kdg": 0.5546,
+          "kds": 0.2702,
+          "klo": 0.05
+        },
+        "p5_global_normal_pps": 2088.0,
+        "normal_dr": 0.927019,
+        "total_attack_mbps": 2245.96,
+        "sim_time_s": 176.3
+      }
+    ]
+  },
+  "phase3_verification": {
+    "kRAND_equal": {
+      "weights": {
+        "ksp": 0.25,
+        "kdg": 0.25,
+        "kds": 0.25,
+        "klo": 0.25
+      },
+      "baseline": {
+        "normal_p5_pps": 2359.5,
+        "normal_p5_mbps": 18.876,
+        "normal_avg_pps": 2559.7222,
+        "normal_delivery_rate": 1.0,
+        "target_isl_normal_p5_pps": 188.5,
+        "avg_delay_ms": 4.5141
+      },
+      "attack": {
+        "total_attack_mbps": 1501.76,
+        "num_attack_flows": 324,
+        "normal_p5_pps": 2309.5,
+        "normal_p5_mbps": 18.476,
+        "normal_avg_pps": 2466.5556,
+        "normal_delivery_rate": 0.9475,
+        "target_isl_normal_p5_pps": 98.0,
+        "avg_delay_ms": 4.9412,
+        "simulation_time_s": 134.87
+      },
+      "comparison": {
+        "p5_drop_pps": 50.0,
+        "p5_drop_pct": 2.1191,
+        "dr_drop": 0.0525
+      }
+    },
+    "kRAND_optimized": {
+      "weights": {
+        "ksp": 0.2317909774278215,
+        "kdg": 0.49366782961266786,
+        "kds": 0.10105380488334026,
+        "klo": 0.17348738807617037
+      },
+      "baseline": {
+        "normal_p5_pps": 2360.0,
+        "normal_p5_mbps": 18.88,
+        "normal_avg_pps": 2559.6667,
+        "normal_delivery_rate": 1.0,
+        "target_isl_normal_p5_pps": 208.0,
+        "avg_delay_ms": 4.4271
+      },
+      "attack": {
+        "total_attack_mbps": 2236.25,
+        "num_attack_flows": 324,
+        "normal_p5_pps": 2306.0,
+        "normal_p5_mbps": 18.448,
+        "normal_avg_pps": 2433.2222,
+        "normal_delivery_rate": 0.930259,
+        "target_isl_normal_p5_pps": 88.5,
+        "avg_delay_ms": 4.8294,
+        "simulation_time_s": 207.06
+      },
+      "comparison": {
+        "p5_drop_pps": 54.0,
+        "p5_drop_pct": 2.2881,
+        "dr_drop": 0.069741
+      }
+    }
+  }
+}

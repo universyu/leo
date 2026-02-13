@@ -1,0 +1,231 @@
+{
+  "summary": {
+    "total_files": 27,
+    "total_lines": 10951,
+    "total_code": 6958,
+    "total_blank": 1532,
+    "total_comment": 2461
+  },
+  "modules": {
+    "leo_network/core": {
+      "files": 7,
+      "total": 4215,
+      "code": 2514,
+      "blank": 539,
+      "comment": 1162
+    },
+    "tests/unit": {
+      "files": 9,
+      "total": 2685,
+      "code": 1753,
+      "blank": 426,
+      "comment": 506
+    },
+    "tests/integration": {
+      "files": 5,
+      "total": 1844,
+      "code": 1310,
+      "blank": 285,
+      "comment": 249
+    },
+    "leo_network/attacks": {
+      "files": 2,
+      "total": 1558,
+      "code": 947,
+      "blank": 186,
+      "comment": 425
+    },
+    "(root)": {
+      "files": 1,
+      "total": 360,
+      "code": 257,
+      "blank": 60,
+      "comment": 43
+    },
+    "examples": {
+      "files": 1,
+      "total": 176,
+      "code": 98,
+      "blank": 32,
+      "comment": 46
+    },
+    "leo_network/__init__.py": {
+      "files": 1,
+      "total": 108,
+      "code": 79,
+      "blank": 4,
+      "comment": 25
+    },
+    "tests/__init__.py": {
+      "files": 1,
+      "total": 5,
+      "code": 0,
+      "blank": 0,
+      "comment": 5
+    }
+  },
+  "files": {
+    "count_lines.py": {
+      "total": 360,
+      "code": 257,
+      "blank": 60,
+      "comment": 43
+    },
+    "tests/__init__.py": {
+      "total": 5,
+      "code": 0,
+      "blank": 0,
+      "comment": 5
+    },
+    "tests/unit/__init__.py": {
+      "total": 1,
+      "code": 0,
+      "blank": 0,
+      "comment": 1
+    },
+    "tests/unit/attack_gs_analysis.py": {
+      "total": 289,
+      "code": 208,
+      "blank": 41,
+      "comment": 40
+    },
+    "tests/unit/ddos_simulation_verify.py": {
+      "total": 499,
+      "code": 337,
+      "blank": 73,
+      "comment": 89
+    },
+    "tests/unit/gs_cost_comparison.py": {
+      "total": 331,
+      "code": 213,
+      "blank": 48,
+      "comment": 70
+    },
+    "tests/unit/gs_full_cost_table.py": {
+      "total": 113,
+      "code": 79,
+      "blank": 18,
+      "comment": 16
+    },
+    "tests/unit/optimize_krand_weights.py": {
+      "total": 1071,
+      "code": 664,
+      "blank": 167,
+      "comment": 240
+    },
+    "tests/unit/quick_test.py": {
+      "total": 192,
+      "code": 126,
+      "blank": 46,
+      "comment": 20
+    },
+    "tests/unit/test_precompute_routes.py": {
+      "total": 106,
+      "code": 70,
+      "blank": 20,
+      "comment": 16
+    },
+    "tests/unit/verify_ground_stations.py": {
+      "total": 83,
+      "code": 56,
+      "blank": 13,
+      "comment": 14
+    },
+    "tests/integration/__init__.py": {
+      "total": 1,
+      "code": 0,
+      "blank": 0,
+      "comment": 1
+    },
+    "tests/integration/ddos_attack_simulation.py": {
+      "total": 400,
+      "code": 285,
+      "blank": 62,
+      "comment": 53
+    },
+    "tests/integration/krand_advantage_simulation.py": {
+      "total": 887,
+      "code": 634,
+      "blank": 136,
+      "comment": 117
+    },
+    "tests/integration/router_comparison.py": {
+      "total": 98,
+      "code": 58,
+      "blank": 21,
+      "comment": 19
+    },
+    "tests/integration/targeted_isl_attack.py": {
+      "total": 458,
+      "code": 333,
+      "blank": 66,
+      "comment": 59
+    },
+    "leo_network/__init__.py": {
+      "total": 108,
+      "code": 79,
+      "blank": 4,
+      "comment": 25
+    },
+    "leo_network/core/__init__.py": {
+      "total": 96,
+      "code": 72,
+      "blank": 7,
+      "comment": 17
+    },
+    "leo_network/core/routing.py": {
+      "total": 803,
+      "code": 451,
+      "blank": 99,
+      "comment": 253
+    },
+    "leo_network/core/simulator.py": {
+      "total": 616,
+      "code": 364,
+      "blank": 70,
+      "comment": 182
+    },
+    "leo_network/core/statistics.py": {
+      "total": 1055,
+      "code": 630,
+      "blank": 139,
+      "comment": 286
+    },
+    "leo_network/core/topology.py": {
+      "total": 756,
+      "code": 449,
+      "blank": 105,
+      "comment": 202
+    },
+    "leo_network/core/traffic.py": {
+      "total": 453,
+      "code": 273,
+      "blank": 54,
+      "comment": 126
+    },
+    "leo_network/core/visualization.py": {
+      "total": 436,
+      "code": 275,
+      "blank": 65,
+      "comment": 96
+    },
+    "leo_network/attacks/__init__.py": {
+      "total": 26,
+      "code": 16,
+      "blank": 2,
+      "comment": 8
+    },
+    "leo_network/attacks/attacks.py": {
+      "total": 1532,
+      "code": 931,
+      "blank": 184,
+      "comment": 417
+    },
+    "examples/basic_simulation.py": {
+      "total": 176,
+      "code": 98,
+      "blank": 32,
+      "comment": 46
+    }
+  }
+}
