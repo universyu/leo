@@ -1,25 +1,25 @@
 {
   "summary": {
-    "total_files": 27,
-    "total_lines": 10951,
-    "total_code": 6958,
-    "total_blank": 1532,
-    "total_comment": 2461
+    "total_files": 30,
+    "total_lines": 12997,
+    "total_code": 8467,
+    "total_blank": 1801,
+    "total_comment": 2729
   },
   "modules": {
     "leo_network/core": {
       "files": 7,
-      "total": 4215,
+      "total": 4220,
       "code": 2514,
       "blank": 539,
-      "comment": 1162
+      "comment": 1167
     },
     "tests/unit": {
-      "files": 9,
-      "total": 2685,
-      "code": 1753,
-      "blank": 426,
-      "comment": 506
+      "files": 11,
+      "total": 3146,
+      "code": 2111,
+      "blank": 486,
+      "comment": 549
     },
     "tests/integration": {
       "files": 5,
@@ -27,6 +27,13 @@
       "code": 1310,
       "blank": 285,
       "comment": 249
+    },
+    "result": {
+      "files": 1,
+      "total": 1580,
+      "code": 1151,
+      "blank": 209,
+      "comment": 220
     },
     "leo_network/attacks": {
       "files": 2,
@@ -71,6 +78,12 @@
       "blank": 60,
       "comment": 43
     },
+    "result/generate_visualizations.py": {
+      "total": 1580,
+      "code": 1151,
+      "blank": 209,
+      "comment": 220
+    },
     "tests/__init__.py": {
       "total": 5,
       "code": 0,
@@ -88,6 +101,18 @@
       "code": 208,
       "blank": 41,
       "comment": 40
+    },
+    "tests/unit/compute_graph_paths.py": {
+      "total": 220,
+      "code": 172,
+      "blank": 28,
+      "comment": 20
+    },
+    "tests/unit/compute_routing_table.py": {
+      "total": 241,
+      "code": 186,
+      "blank": 32,
+      "comment": 23
     },
     "tests/unit/ddos_simulation_verify.py": {
       "total": 499,
@@ -174,10 +199,10 @@
       "comment": 17
     },
     "leo_network/core/routing.py": {
-      "total": 803,
+      "total": 808,
       "code": 451,
       "blank": 99,
-      "comment": 253
+      "comment": 258
     },
     "leo_network/core/simulator.py": {
       "total": 616,

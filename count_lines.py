@@ -2,7 +2,7 @@
 Count lines of code for all Python files in the repository.
 - Grouped by module (top-level directories)
 - Generates beautiful visualisation charts
-- Results saved to output/code_line_count.json and output/code_lines_visual.png
+- Results saved to result/code_line_count.json and result/code_lines_visual.png
 """
 
 import os
@@ -308,7 +308,7 @@ def draw_visualisation(module_stats, summary, output_path):
 
 def main():
     root_dir = os.path.dirname(os.path.abspath(__file__))
-    output_dir = os.path.join(root_dir, 'output')
+    output_dir = os.path.join(root_dir, 'result')
     os.makedirs(output_dir, exist_ok=True)
 
     file_stats, module_stats, summary = collect_stats(root_dir)
@@ -347,7 +347,7 @@ def main():
     }
     with open(json_path, 'w', encoding='utf-8') as f:
         json.dump(payload, f, indent=2, ensure_ascii=False)
-    print(f"  ✅  JSON saved to: output/code_line_count.json")
+    print(f"  ✅  JSON saved to: result/code_line_count.json")
 
     # ── Generate visualisation ──
     png_path = os.path.join(output_dir, 'code_lines_visual.png')

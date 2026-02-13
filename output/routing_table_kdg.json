@@ -1,0 +1,2235 @@
+{
+  "algorithm": "KDG",
+  "algorithm_desc": "K-Disjoint Geodiverse",
+  "source_gs": "GS_MexicoCity",
+  "source_position": {
+    "lat": 19.4326,
+    "lon": -99.1332
+  },
+  "constellation": {
+    "num_planes": 6,
+    "sats_per_plane": 11,
+    "total_sats": 66,
+    "total_gs": 32
+  },
+  "gs_connections": {
+    "GS_MexicoCity": {
+      "lat": 19.4326,
+      "lon": -99.1332,
+      "connected_sats": [
+        "SAT_4_0",
+        "SAT_2_4",
+        "SAT_4_1"
+      ]
+    },
+    "GS_Istanbul": {
+      "lat": 41.0082,
+      "lon": 28.9784,
+      "connected_sats": [
+        "SAT_5_3",
+        "SAT_0_1",
+        "SAT_4_4"
+      ]
+    },
+    "GS_London": {
+      "lat": 51.5074,
+      "lon": -0.1278,
+      "connected_sats": [
+        "SAT_5_2",
+        "SAT_4_3",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Paris": {
+      "lat": 48.8566,
+      "lon": 2.3522,
+      "connected_sats": [
+        "SAT_5_2",
+        "SAT_4_3",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Tokyo": {
+      "lat": 35.6762,
+      "lon": 139.6503,
+      "connected_sats": [
+        "SAT_0_4",
+        "SAT_2_1",
+        "SAT_1_2"
+      ]
+    },
+    "GS_Sydney": {
+      "lat": -33.8688,
+      "lon": 151.2093,
+      "connected_sats": [
+        "SAT_4_8",
+        "SAT_3_10",
+        "SAT_5_7"
+      ]
+    },
+    "GS_NewYork": {
+      "lat": 40.7128,
+      "lon": -74.006,
+      "connected_sats": [
+        "SAT_4_2",
+        "SAT_3_3",
+        "SAT_2_4"
+      ]
+    },
+    "GS_Chicago": {
+      "lat": 41.8781,
+      "lon": -87.6298,
+      "connected_sats": [
+        "SAT_4_2",
+        "SAT_3_3",
+        "SAT_2_4"
+      ]
+    },
+    "GS_Houston": {
+      "lat": 29.7604,
+      "lon": -95.3698,
+      "connected_sats": [
+        "SAT_3_3",
+        "SAT_2_4",
+        "SAT_4_1"
+      ]
+    },
+    "GS_Toronto": {
+      "lat": 43.6532,
+      "lon": -79.3832,
+      "connected_sats": [
+        "SAT_4_2",
+        "SAT_3_3",
+        "SAT_2_4"
+      ]
+    },
+    "GS_SaoPaulo": {
+      "lat": -23.5505,
+      "lon": -46.6333,
+      "connected_sats": [
+        "SAT_0_10",
+        "SAT_2_6",
+        "SAT_2_7"
+      ]
+    },
+    "GS_BuenosAires": {
+      "lat": -34.6037,
+      "lon": -58.3816,
+      "connected_sats": [
+        "SAT_0_9",
+        "SAT_5_10",
+        "SAT_1_8"
+      ]
+    },
+    "GS_Cairo": {
+      "lat": 30.0444,
+      "lon": 31.2357,
+      "connected_sats": [
+        "SAT_0_1",
+        "SAT_4_4",
+        "SAT_0_2"
+      ]
+    },
+    "GS_Dubai": {
+      "lat": 25.2048,
+      "lon": 55.2708,
+      "connected_sats": [
+        "SAT_4_5",
+        "SAT_0_2",
+        "SAT_1_1"
+      ]
+    },
+    "GS_Mumbai": {
+      "lat": 19.076,
+      "lon": 72.8777,
+      "connected_sats": [
+        "SAT_5_4",
+        "SAT_4_5",
+        "SAT_1_1"
+      ]
+    },
+    "GS_Singapore": {
+      "lat": 1.3521,
+      "lon": 103.8198,
+      "connected_sats": [
+        "SAT_5_5",
+        "SAT_2_0",
+        "SAT_2_10"
+      ]
+    },
+    "GS_Seoul": {
+      "lat": 37.5665,
+      "lon": 126.978,
+      "connected_sats": [
+        "SAT_0_4",
+        "SAT_1_2",
+        "SAT_2_1"
+      ]
+    },
+    "GS_Beijing": {
+      "lat": 39.9042,
+      "lon": 116.4074,
+      "connected_sats": [
+        "SAT_0_4",
+        "SAT_1_2",
+        "SAT_0_3"
+      ]
+    },
+    "GS_Moscow": {
+      "lat": 55.7558,
+      "lon": 37.6173,
+      "connected_sats": [
+        "SAT_5_3",
+        "SAT_0_2",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Berlin": {
+      "lat": 52.52,
+      "lon": 13.405,
+      "connected_sats": [
+        "SAT_5_2",
+        "SAT_4_3",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Rome": {
+      "lat": 41.9028,
+      "lon": 12.4964,
+      "connected_sats": [
+        "SAT_5_2",
+        "SAT_0_1",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Madrid": {
+      "lat": 40.4168,
+      "lon": -3.7038,
+      "connected_sats": [
+        "SAT_5_2",
+        "SAT_4_3",
+        "SAT_4_4"
+      ]
+    },
+    "GS_Johannesburg": {
+      "lat": -26.2041,
+      "lon": 28.0473,
+      "connected_sats": [
+        "SAT_3_6",
+        "SAT_3_7",
+        "SAT_1_10"
+      ]
+    },
+    "GS_Lagos": {
+      "lat": 6.5244,
+      "lon": 3.3792,
+      "connected_sats": [
+        "SAT_0_0",
+        "SAT_3_6",
+        "SAT_3_5"
+      ]
+    },
+    "GS_Nairobi": {
+      "lat": -1.2921,
+      "lon": 36.8219,
+      "connected_sats": [
+        "SAT_1_0",
+        "SAT_4_5",
+        "SAT_1_10"
+      ]
+    },
+    "GS_Lima": {
+      "lat": -12.0464,
+      "lon": -77.0428,
+      "connected_sats": [
+        "SAT_5_0",
+        "SAT_5_10",
+        "SAT_2_5"
+      ]
+    },
+    "GS_Bogota": {
+      "lat": 4.711,
+      "lon": -74.0721,
+      "connected_sats": [
+        "SAT_2_5",
+        "SAT_5_0",
+        "SAT_2_6"
+      ]
+    },
+    "GS_LosAngeles": {
+      "lat": 34.0522,
+      "lon": -118.2437,
+      "connected_sats": [
+        "SAT_2_4",
+        "SAT_3_2",
+        "SAT_4_1"
+      ]
+    },
+    "GS_SanFrancisco": {
+      "lat": 37.7749,
+      "lon": -122.4194,
+      "connected_sats": [
+        "SAT_2_3",
+        "SAT_2_4",
+        "SAT_3_2"
+      ]
+    },
+    "GS_Denver": {
+      "lat": 39.7392,
+      "lon": -104.9903,
+      "connected_sats": [
+        "SAT_3_2",
+        "SAT_2_4",
+        "SAT_4_1"
+      ]
+    },
+    "GS_Miami": {
+      "lat": 25.7617,
+      "lon": -80.1918,
+      "connected_sats": [
+        "SAT_2_4",
+        "SAT_2_5",
+        "SAT_4_1"
+      ]
+    },
+    "GS_TelAviv": {
+      "lat": 32.0853,
+      "lon": 34.7818,
+      "connected_sats": [
+        "SAT_0_1",
+        "SAT_4_4",
+        "SAT_0_2"
+      ]
+    }
+  },
+  "routing_table": [
+    {
+      "destination": "GS_Houston",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Houston"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 5.723,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Houston",
+          "type": "GSL",
+          "delay_ms": 2.72
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Houston"
+          ],
+          "hop_count": 2,
+          "delay_ms": 10.596,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Denver",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Denver"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 9.092,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Denver",
+          "type": "GSL",
+          "delay_ms": 6.089
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Denver"
+          ],
+          "hop_count": 2,
+          "delay_ms": 10.934,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Miami",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Miami"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 9.733,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Miami",
+          "type": "GSL",
+          "delay_ms": 6.729
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Miami"
+          ],
+          "hop_count": 2,
+          "delay_ms": 13.937,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_LosAngeles",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_LosAngeles"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 10.463,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_LosAngeles",
+          "type": "GSL",
+          "delay_ms": 7.46
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_LosAngeles"
+          ],
+          "hop_count": 2,
+          "delay_ms": 14.845,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Chicago",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "GS_Chicago"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 10.562,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "GS_Chicago",
+          "type": "GSL",
+          "delay_ms": 3.357
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "GS_Houston",
+            "SAT_3_3",
+            "GS_Chicago"
+          ],
+          "hop_count": 4,
+          "delay_ms": 21.265,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Toronto",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "GS_Toronto"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 12.686,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "GS_Toronto",
+          "type": "GSL",
+          "delay_ms": 5.481
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "GS_Houston",
+            "SAT_3_3",
+            "GS_Toronto"
+          ],
+          "hop_count": 4,
+          "delay_ms": 19.862,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_NewYork",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "GS_NewYork"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 13.826,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "GS_NewYork",
+          "type": "GSL",
+          "delay_ms": 6.622
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "SAT_4_2",
+            "GS_NewYork"
+          ],
+          "hop_count": 3,
+          "delay_ms": 19.495,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_SanFrancisco",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "GS_SanFrancisco"
+      ],
+      "hop_count": 2,
+      "total_delay_ms": 15.806,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "GS_SanFrancisco",
+          "type": "GSL",
+          "delay_ms": 8.602
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "GS_Denver",
+            "SAT_3_2",
+            "GS_SanFrancisco"
+          ],
+          "hop_count": 4,
+          "delay_ms": 20.178,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Bogota",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Miami",
+        "SAT_2_5",
+        "GS_Bogota"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 20.146,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Miami",
+          "type": "GSL",
+          "delay_ms": 6.729
+        },
+        {
+          "from": "GS_Miami",
+          "to": "SAT_2_5",
+          "type": "GSL",
+          "delay_ms": 6.413
+        },
+        {
+          "from": "SAT_2_5",
+          "to": "GS_Bogota",
+          "type": "GSL",
+          "delay_ms": 4.0
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_0",
+            "SAT_5_0",
+            "GS_Bogota"
+          ],
+          "hop_count": 3,
+          "delay_ms": 40.041,
+          "next_hop": "SAT_4_0"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Lima",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Miami",
+        "SAT_2_5",
+        "GS_Lima"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 26.278,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Miami",
+          "type": "GSL",
+          "delay_ms": 6.729
+        },
+        {
+          "from": "GS_Miami",
+          "to": "SAT_2_5",
+          "type": "GSL",
+          "delay_ms": 6.413
+        },
+        {
+          "from": "SAT_2_5",
+          "to": "GS_Lima",
+          "type": "GSL",
+          "delay_ms": 10.133
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "SAT_2_5",
+            "GS_Bogota",
+            "SAT_5_0",
+            "GS_Lima"
+          ],
+          "hop_count": 5,
+          "delay_ms": 38.408,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_London",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "GS_London"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 33.347,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "GS_London",
+          "type": "GSL",
+          "delay_ms": 4.328
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Toronto",
+            "SAT_4_2",
+            "SAT_5_2",
+            "GS_London"
+          ],
+          "hop_count": 5,
+          "delay_ms": 35.695,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_SaoPaulo",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Miami",
+        "SAT_2_5",
+        "SAT_2_6",
+        "GS_SaoPaulo"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 33.784,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Miami",
+          "type": "GSL",
+          "delay_ms": 6.729
+        },
+        {
+          "from": "GS_Miami",
+          "to": "SAT_2_5",
+          "type": "GSL",
+          "delay_ms": 6.413
+        },
+        {
+          "from": "SAT_2_5",
+          "to": "SAT_2_6",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_2_6",
+          "to": "GS_SaoPaulo",
+          "type": "GSL",
+          "delay_ms": 4.63
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Paris",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "GS_Paris"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 34.16,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "GS_Paris",
+          "type": "GSL",
+          "delay_ms": 5.14
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Toronto",
+            "SAT_4_2",
+            "SAT_5_2",
+            "GS_Paris"
+          ],
+          "hop_count": 5,
+          "delay_ms": 35.713,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Madrid",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "GS_Madrid"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 34.989,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "GS_Madrid",
+          "type": "GSL",
+          "delay_ms": 5.969
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Toronto",
+            "SAT_4_2",
+            "SAT_5_2",
+            "GS_Madrid"
+          ],
+          "hop_count": 5,
+          "delay_ms": 35.671,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Berlin",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "GS_Berlin"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 36.249,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "GS_Berlin",
+          "type": "GSL",
+          "delay_ms": 7.23
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "GS_Toronto",
+            "SAT_4_2",
+            "SAT_5_2",
+            "GS_Berlin"
+          ],
+          "hop_count": 5,
+          "delay_ms": 38.41,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Rome",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_5_2",
+        "GS_Rome"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 37.875,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_5_2",
+          "type": "ISL",
+          "delay_ms": 15.865
+        },
+        {
+          "from": "SAT_5_2",
+          "to": "GS_Rome",
+          "type": "GSL",
+          "delay_ms": 5.999
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_BuenosAires",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "GS_Miami",
+        "SAT_2_5",
+        "GS_Lima",
+        "SAT_5_10",
+        "GS_BuenosAires"
+      ],
+      "hop_count": 6,
+      "total_delay_ms": 40.507,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "GS_Miami",
+          "type": "GSL",
+          "delay_ms": 6.729
+        },
+        {
+          "from": "GS_Miami",
+          "to": "SAT_2_5",
+          "type": "GSL",
+          "delay_ms": 6.413
+        },
+        {
+          "from": "SAT_2_5",
+          "to": "GS_Lima",
+          "type": "GSL",
+          "delay_ms": 10.133
+        },
+        {
+          "from": "GS_Lima",
+          "to": "SAT_5_10",
+          "type": "GSL",
+          "delay_ms": 5.73
+        },
+        {
+          "from": "SAT_5_10",
+          "to": "GS_BuenosAires",
+          "type": "GSL",
+          "delay_ms": 8.5
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Lagos",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "SAT_3_4",
+        "SAT_3_5",
+        "GS_Lagos"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 44.577,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "SAT_3_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_3_4",
+          "to": "SAT_3_5",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_3_5",
+          "to": "GS_Lagos",
+          "type": "GSL",
+          "delay_ms": 5.958
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Istanbul",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_4_4",
+        "GS_Istanbul"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 44.652,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_4_4",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_4",
+          "to": "GS_Istanbul",
+          "type": "GSL",
+          "delay_ms": 2.624
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Moscow",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_5_3",
+        "GS_Moscow"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 45.797,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_5_3",
+          "type": "ISL",
+          "delay_ms": 14.139
+        },
+        {
+          "from": "SAT_5_3",
+          "to": "GS_Moscow",
+          "type": "GSL",
+          "delay_ms": 2.639
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Cairo",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_4_4",
+        "GS_Cairo"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 45.846,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_4_4",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_4",
+          "to": "GS_Cairo",
+          "type": "GSL",
+          "delay_ms": 3.819
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_TelAviv",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_4_4",
+        "GS_TelAviv"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 46.074,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_4_4",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_4",
+          "to": "GS_TelAviv",
+          "type": "GSL",
+          "delay_ms": 4.046
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Tokyo",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "SAT_1_4",
+        "SAT_0_4",
+        "GS_Tokyo"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 46.603,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "SAT_1_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_1_4",
+          "to": "SAT_0_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_0_4",
+          "to": "GS_Tokyo",
+          "type": "GSL",
+          "delay_ms": 2.584
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "SAT_3_1",
+            "SAT_2_1",
+            "GS_Tokyo"
+          ],
+          "hop_count": 4,
+          "delay_ms": 48.986,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Sydney",
+      "next_hop": "SAT_4_0",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_0",
+        "SAT_4_10",
+        "SAT_3_10",
+        "GS_Sydney"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 49.272,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_0",
+          "type": "GSL",
+          "delay_ms": 10.952
+        },
+        {
+          "from": "SAT_4_0",
+          "to": "SAT_4_10",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_10",
+          "to": "SAT_3_10",
+          "type": "ISL",
+          "delay_ms": 20.823
+        },
+        {
+          "from": "SAT_3_10",
+          "to": "GS_Sydney",
+          "type": "GSL",
+          "delay_ms": 4.489
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Seoul",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "SAT_1_4",
+        "SAT_0_4",
+        "GS_Seoul"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 49.897,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "SAT_1_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_1_4",
+          "to": "SAT_0_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_0_4",
+          "to": "GS_Seoul",
+          "type": "GSL",
+          "delay_ms": 5.878
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "SAT_3_1",
+            "SAT_2_1",
+            "GS_Seoul"
+          ],
+          "hop_count": 4,
+          "delay_ms": 51.439,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Beijing",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "SAT_2_3",
+        "SAT_1_3",
+        "SAT_1_2",
+        "GS_Beijing"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 50.686,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "SAT_2_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_2_3",
+          "to": "SAT_1_3",
+          "type": "ISL",
+          "delay_ms": 14.139
+        },
+        {
+          "from": "SAT_1_3",
+          "to": "SAT_1_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_1_2",
+          "to": "GS_Beijing",
+          "type": "GSL",
+          "delay_ms": 3.326
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_4_1",
+            "GS_Houston",
+            "SAT_2_4",
+            "SAT_1_4",
+            "SAT_0_4",
+            "GS_Beijing"
+          ],
+          "hop_count": 6,
+          "delay_ms": 54.805,
+          "next_hop": "SAT_4_1"
+        }
+      ]
+    },
+    {
+      "destination": "GS_Dubai",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_5_3",
+        "GS_Moscow",
+        "SAT_0_2",
+        "GS_Dubai"
+      ],
+      "hop_count": 7,
+      "total_delay_ms": 59.651,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_5_3",
+          "type": "ISL",
+          "delay_ms": 14.139
+        },
+        {
+          "from": "SAT_5_3",
+          "to": "GS_Moscow",
+          "type": "GSL",
+          "delay_ms": 2.639
+        },
+        {
+          "from": "GS_Moscow",
+          "to": "SAT_0_2",
+          "type": "GSL",
+          "delay_ms": 5.399
+        },
+        {
+          "from": "SAT_0_2",
+          "to": "GS_Dubai",
+          "type": "GSL",
+          "delay_ms": 8.455
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Johannesburg",
+      "next_hop": "SAT_2_4",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_2_4",
+        "SAT_3_4",
+        "SAT_3_5",
+        "SAT_3_6",
+        "GS_Johannesburg"
+      ],
+      "hop_count": 5,
+      "total_delay_ms": 60.078,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_2_4",
+          "type": "GSL",
+          "delay_ms": 7.205
+        },
+        {
+          "from": "SAT_2_4",
+          "to": "SAT_3_4",
+          "type": "ISL",
+          "delay_ms": 18.407
+        },
+        {
+          "from": "SAT_3_4",
+          "to": "SAT_3_5",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_3_5",
+          "to": "SAT_3_6",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_3_6",
+          "to": "GS_Johannesburg",
+          "type": "GSL",
+          "delay_ms": 8.45
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Nairobi",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_4_4",
+        "SAT_4_5",
+        "GS_Nairobi"
+      ],
+      "hop_count": 6,
+      "total_delay_ms": 62.706,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_4_4",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_4",
+          "to": "SAT_4_5",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_5",
+          "to": "GS_Nairobi",
+          "type": "GSL",
+          "delay_ms": 7.671
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Singapore",
+      "next_hop": "SAT_4_0",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_0",
+        "SAT_3_0",
+        "SAT_2_0",
+        "GS_Singapore"
+      ],
+      "hop_count": 4,
+      "total_delay_ms": 63.643,
+      "num_k_paths": 1,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_0",
+          "type": "GSL",
+          "delay_ms": 10.952
+        },
+        {
+          "from": "SAT_4_0",
+          "to": "SAT_3_0",
+          "type": "ISL",
+          "delay_ms": 23.086
+        },
+        {
+          "from": "SAT_3_0",
+          "to": "SAT_2_0",
+          "type": "ISL",
+          "delay_ms": 23.086
+        },
+        {
+          "from": "SAT_2_0",
+          "to": "GS_Singapore",
+          "type": "GSL",
+          "delay_ms": 6.519
+        }
+      ],
+      "alternative_paths": []
+    },
+    {
+      "destination": "GS_Mumbai",
+      "next_hop": "SAT_4_1",
+      "path": [
+        "GS_MexicoCity",
+        "SAT_4_1",
+        "SAT_4_2",
+        "SAT_4_3",
+        "SAT_4_4",
+        "SAT_4_5",
+        "GS_Mumbai"
+      ],
+      "hop_count": 6,
+      "total_delay_ms": 63.984,
+      "num_k_paths": 2,
+      "links": [
+        {
+          "from": "GS_MexicoCity",
+          "to": "SAT_4_1",
+          "type": "GSL",
+          "delay_ms": 3.003
+        },
+        {
+          "from": "SAT_4_1",
+          "to": "SAT_4_2",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_2",
+          "to": "SAT_4_3",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_3",
+          "to": "SAT_4_4",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_4",
+          "to": "SAT_4_5",
+          "type": "ISL",
+          "delay_ms": 13.008
+        },
+        {
+          "from": "SAT_4_5",
+          "to": "GS_Mumbai",
+          "type": "GSL",
+          "delay_ms": 8.949
+        }
+      ],
+      "alternative_paths": [
+        {
+          "path_index": 1,
+          "nodes": [
+            "GS_MexicoCity",
+            "SAT_2_4",
+            "SAT_2_3",
+            "SAT_1_3",
+            "SAT_1_2",
+            "SAT_1_1",
+            "GS_Mumbai"
+          ],
+          "hop_count": 6,
+          "delay_ms": 64.655,
+          "next_hop": "SAT_2_4"
+        }
+      ]
+    }
+  ],
+  "sat_positions": {
+    "SAT_0_0": {
+      "plane": 0,
+      "index": 0,
+      "lat": 0.0,
+      "lon": 0.0
+    },
+    "SAT_0_1": {
+      "plane": 0,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": 21.144627791570198
+    },
+    "SAT_0_2": {
+      "plane": 0,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": 52.80711426630859
+    },
+    "SAT_0_3": {
+      "plane": 0,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": 103.43654756046833
+    },
+    "SAT_0_4": {
+      "plane": 0,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": 145.21880133421251
+    },
+    "SAT_0_5": {
+      "plane": 0,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": 169.9787824885808
+    },
+    "SAT_0_6": {
+      "plane": 0,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": -169.9787824885808
+    },
+    "SAT_0_7": {
+      "plane": 0,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": -145.21880133421251
+    },
+    "SAT_0_8": {
+      "plane": 0,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": -103.43654756046833
+    },
+    "SAT_0_9": {
+      "plane": 0,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": -52.80711426630856
+    },
+    "SAT_0_10": {
+      "plane": 0,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": -21.144627791570233
+    },
+    "SAT_1_0": {
+      "plane": 1,
+      "index": 0,
+      "lat": 0.0,
+      "lon": 59.99999999999999
+    },
+    "SAT_1_1": {
+      "plane": 1,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": 81.14462779157019
+    },
+    "SAT_1_2": {
+      "plane": 1,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": 112.80711426630857
+    },
+    "SAT_1_3": {
+      "plane": 1,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": 163.4365475604683
+    },
+    "SAT_1_4": {
+      "plane": 1,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": -154.78119866578749
+    },
+    "SAT_1_5": {
+      "plane": 1,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": -130.0212175114192
+    },
+    "SAT_1_6": {
+      "plane": 1,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": -109.97878248858083
+    },
+    "SAT_1_7": {
+      "plane": 1,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": -85.21880133421253
+    },
+    "SAT_1_8": {
+      "plane": 1,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": -43.436547560468334
+    },
+    "SAT_1_9": {
+      "plane": 1,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": 7.192885733691435
+    },
+    "SAT_1_10": {
+      "plane": 1,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": 38.855372208429756
+    },
+    "SAT_2_0": {
+      "plane": 2,
+      "index": 0,
+      "lat": 0.0,
+      "lon": 119.99999999999999
+    },
+    "SAT_2_1": {
+      "plane": 2,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": 141.1446277915702
+    },
+    "SAT_2_2": {
+      "plane": 2,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": 172.8071142663086
+    },
+    "SAT_2_3": {
+      "plane": 2,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": -136.56345243953172
+    },
+    "SAT_2_4": {
+      "plane": 2,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": -94.7811986657875
+    },
+    "SAT_2_5": {
+      "plane": 2,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": -70.02121751141921
+    },
+    "SAT_2_6": {
+      "plane": 2,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": -49.978782488580826
+    },
+    "SAT_2_7": {
+      "plane": 2,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": -25.218801334212532
+    },
+    "SAT_2_8": {
+      "plane": 2,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": 16.563452439531666
+    },
+    "SAT_2_9": {
+      "plane": 2,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": 67.19288573369144
+    },
+    "SAT_2_10": {
+      "plane": 2,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": 98.85537220842976
+    },
+    "SAT_3_0": {
+      "plane": 3,
+      "index": 0,
+      "lat": 0.0,
+      "lon": 180.0
+    },
+    "SAT_3_1": {
+      "plane": 3,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": -158.8553722084298
+    },
+    "SAT_3_2": {
+      "plane": 3,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": -127.19288573369143
+    },
+    "SAT_3_3": {
+      "plane": 3,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": -76.56345243953169
+    },
+    "SAT_3_4": {
+      "plane": 3,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": -34.78119866578749
+    },
+    "SAT_3_5": {
+      "plane": 3,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": -10.021217511419204
+    },
+    "SAT_3_6": {
+      "plane": 3,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": 10.021217511419183
+    },
+    "SAT_3_7": {
+      "plane": 3,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": 34.78119866578747
+    },
+    "SAT_3_8": {
+      "plane": 3,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": 76.56345243953167
+    },
+    "SAT_3_9": {
+      "plane": 3,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": 127.19288573369143
+    },
+    "SAT_3_10": {
+      "plane": 3,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": 158.85537220842977
+    },
+    "SAT_4_0": {
+      "plane": 4,
+      "index": 0,
+      "lat": 0.0,
+      "lon": -120.00000000000004
+    },
+    "SAT_4_1": {
+      "plane": 4,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": -98.85537220842983
+    },
+    "SAT_4_2": {
+      "plane": 4,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": -67.19288573369145
+    },
+    "SAT_4_3": {
+      "plane": 4,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": -16.563452439531712
+    },
+    "SAT_4_4": {
+      "plane": 4,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": 25.218801334212483
+    },
+    "SAT_4_5": {
+      "plane": 4,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": 49.97878248858078
+    },
+    "SAT_4_6": {
+      "plane": 4,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": 70.02121751141915
+    },
+    "SAT_4_7": {
+      "plane": 4,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": 94.78119866578744
+    },
+    "SAT_4_8": {
+      "plane": 4,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": 136.56345243953166
+    },
+    "SAT_4_9": {
+      "plane": 4,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": -172.8071142663086
+    },
+    "SAT_4_10": {
+      "plane": 4,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": -141.14462779157026
+    },
+    "SAT_5_0": {
+      "plane": 5,
+      "index": 0,
+      "lat": 0.0,
+      "lon": -59.99999999999999
+    },
+    "SAT_5_1": {
+      "plane": 5,
+      "index": 1,
+      "lat": 25.580256086315817,
+      "lon": -38.85537220842979
+    },
+    "SAT_5_2": {
+      "plane": 5,
+      "index": 2,
+      "lat": 46.59080640338958,
+      "lon": -7.192885733691409
+    },
+    "SAT_5_3": {
+      "plane": 5,
+      "index": 3,
+      "lat": 52.23287479774109,
+      "lon": 43.436547560468334
+    },
+    "SAT_5_4": {
+      "plane": 5,
+      "index": 4,
+      "lat": 37.125898607313495,
+      "lon": 85.21880133421253
+    },
+    "SAT_5_5": {
+      "plane": 5,
+      "index": 5,
+      "lat": 13.002973673463453,
+      "lon": 109.97878248858082
+    },
+    "SAT_5_6": {
+      "plane": 5,
+      "index": 6,
+      "lat": -13.00297367346344,
+      "lon": 130.0212175114192
+    },
+    "SAT_5_7": {
+      "plane": 5,
+      "index": 7,
+      "lat": -37.12589860731349,
+      "lon": 154.78119866578749
+    },
+    "SAT_5_8": {
+      "plane": 5,
+      "index": 8,
+      "lat": -52.23287479774109,
+      "lon": -163.4365475604683
+    },
+    "SAT_5_9": {
+      "plane": 5,
+      "index": 9,
+      "lat": -46.590806403389564,
+      "lon": -112.80711426630856
+    },
+    "SAT_5_10": {
+      "plane": 5,
+      "index": 10,
+      "lat": -25.580256086315853,
+      "lon": -81.14462779157023
+    }
+  },
+  "summary": {
+    "total_destinations": 31,
+    "avg_hop_count": 4.0,
+    "avg_delay_ms": 36.087,
+    "min_delay_ms": 5.723,
+    "max_delay_ms": 63.984,
+    "compute_time_s": 0.1861
+  }
+}
