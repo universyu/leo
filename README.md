@@ -20,11 +20,12 @@ A comprehensive simulation framework for modeling **Low Earth Orbit (LEO) satell
 - **Impact Analysis**: Separate tracking of normal vs. attack traffic performance
 
 ### Analysis & Visualization
+- **14 Publication-Ready Figures**: Automated generation of all thesis/paper figures
 - **Comprehensive Statistics**: Throughput, latency (avg/P50/P95/P99), packet loss, link utilization
 - **Attack Cost Metrics**: Measures attack efficiency (attack traffic / normal packet loss rate)
 - **5th Percentile Throughput**: Evaluates worst-case network performance under attack
-- **Comparative Analysis**: Before/after attack impact measurement
-- **Visualization Tools**: Network topology, traffic heatmaps, performance charts
+- **Graph-Theoretic Visualization**: 4 K-routing algorithms visualized as graph topologies
+- **Routing Table Visualization**: Complete routing table display for all 4 K-routing algorithms
 
 ---
 
@@ -38,24 +39,64 @@ graduate_code/
 │   │   ├── __init__.py
 │   │   ├── topology.py            # LEO constellation & link modeling
 │   │   ├── traffic.py             # Traffic generation (normal flows)
-│   │   ├── routing.py             # Routing algorithms
+│   │   ├── routing.py             # Routing algorithms (KSP, KDS, KDG, KLO)
 │   │   ├── statistics.py          # Statistics collection & analysis
 │   │   ├── simulator.py           # Simulation engine
-│   │   └── visualization.py       # Plotting & visualization tools
-│   └── attacks/                   # ⚔️ DDoS attack module
-│       ├── __init__.py
-│       └── attacks.py             # Attack generators & strategies
-├── tests/                         # 🧪 Test suite
-│   ├── unit/                      # Unit tests
-│   │   ├── quick_test.py          # Quick functionality verification
-│   │   ├── debug_attack.py        # Attack module debugging
-│   │   └── debug_flows.py         # Traffic flow debugging
-│   └── integration/               # Integration tests
-│       ├── ddos_attack_simulation.py   # Full DDoS simulation scenarios
-│       └── router_comparison.py        # Routing algorithm comparison
+│   │   └── visualization.py       # Base plotting & visualization tools
+│   ├── attacks/                   # ⚔️ DDoS attack module
+│   │   ├── __init__.py
+│   │   └── attacks.py             # Attack generators & strategies
+│   └── defense/                   # 🛡️ Defense module (reserved)
+│
+├── tests/                         # 🧪 Test & computation scripts
+│   ├── unit/                      # Unit tests & data computation
+│   │   ├── quick_test.py                # Quick functionality verification
+│   │   ├── compute_graph_paths.py       # Compute K-paths for graph visualization (→ Fig 7~10)
+│   │   ├── compute_routing_table.py     # Compute routing tables for 4 algorithms (→ Fig 11~14)
+│   │   ├── ddos_simulation_verify.py    # DDoS simulation result verification
+│   │   ├── attack_gs_analysis.py        # Ground station attack analysis
+│   │   ├── gs_cost_comparison.py        # Ground station cost comparison
+│   │   ├── gs_full_cost_table.py        # Full ground station cost table
+│   │   ├── optimize_krand_weights.py    # k-RAND weight optimization
+│   │   ├── test_precompute_routes.py    # Route precomputation tests
+│   │   └── verify_ground_stations.py    # Ground station verification
+│   └── integration/               # Integration tests & simulations
+│       ├── krand_advantage_simulation.py  # k-RAND advantage simulation (→ Fig 1~6 data)
+│       ├── ddos_attack_simulation.py      # Full DDoS simulation scenarios
+│       ├── targeted_isl_attack.py         # Targeted ISL attack simulation
+│       └── router_comparison.py           # Routing algorithm comparison
+│
 ├── examples/                      # 📚 Example scripts
 │   └── basic_simulation.py        # Getting started example
-├── output/                        # 📊 Generated outputs (charts, logs)
+│
+├── output/                        # � Intermediate data (JSON)
+│   ├── graph_paths_data.json              # K-paths data for graph visualization
+│   ├── routing_table_ksp.json             # KSP routing table
+│   ├── routing_table_kds.json             # KDS routing table
+│   ├── routing_table_kdg.json             # KDG routing table
+│   ├── routing_table_klo.json             # KLO routing table
+│   └── routing_table_data.json            # Combined routing table data
+│
+├── result/                        # 📊 Final outputs (figures & stats)
+│   ├── generate_visualizations.py         # 🎨 Master visualization script (generates all 14 figures)
+│   ├── fig1_attack_cost_comparison.png    # Attack cost comparison (bar chart)
+│   ├── fig2_network_topology_attack.png   # LEO 6×11 network topology with attack
+│   ├── fig3_p5_throughput_comparison.png   # P5 throughput comparison
+│   ├── fig4_vulnerability_analysis.png    # Vulnerability analysis flow
+│   ├── fig5_attacked_gs_paths.png         # GS paths through target ISL (horizontal, split)
+│   ├── fig6_attacked_gs_traffic.png       # GS attack traffic (horizontal, split)
+│   ├── fig7_graph_ksp.png                 # KSP algorithm graph visualization
+│   ├── fig8_graph_kds.png                 # KDS algorithm graph visualization
+│   ├── fig9_graph_kdg.png                 # KDG algorithm graph visualization
+│   ├── fig10_graph_klo.png                # KLO algorithm graph visualization
+│   ├── fig11_routing_table_ksp.png        # KSP routing table visualization
+│   ├── fig12_routing_table_kds.png        # KDS routing table visualization
+│   ├── fig13_routing_table_kdg.png        # KDG routing table visualization
+│   ├── fig14_routing_table_klo.png        # KLO routing table visualization
+│   ├── code_lines_visual.png              # Code statistics dashboard
+│   └── code_line_count.json               # Code line count data
+│
+├── count_lines.py                 # 📏 Code line counter & dashboard generator
 ├── requirements.txt               # Python dependencies
 └── README.md                      # This file
 ```
@@ -80,6 +121,17 @@ cd graduate_code
 pip install -r requirements.txt
 ```
 
+### Dependencies
+
+| Package | Version | Purpose |
+|---------|---------|---------|
+| networkx | ≥ 3.0 | Graph algorithms & network modeling |
+| numpy | ≥ 1.24.0 | Numerical computation |
+| matplotlib | ≥ 3.7.0 | Plotting & visualization |
+| pandas | ≥ 2.0.0 | Data analysis |
+| seaborn | ≥ 0.12.0 | Statistical visualization |
+| tqdm | ≥ 4.65.0 | Progress bars |
+
 ### Verify Installation
 
 ```bash
@@ -87,15 +139,71 @@ pip install -r requirements.txt
 python tests/unit/quick_test.py
 ```
 
-### Run Your First Simulation
+---
+
+## 📊 Figure Generation Pipeline
+
+The project generates **14 publication-ready figures** through a three-stage pipeline:
+
+```
+┌─────────────────────────────────────────────────────────────────────┐
+│                      Stage 1: Run Simulations                       │
+│                                                                     │
+│  krand_advantage_simulation.py  → output/ (DDoS simulation data)   │
+│  compute_graph_paths.py         → output/graph_paths_data.json     │
+│  compute_routing_table.py       → output/routing_table_*.json      │
+└──────────────────────────────┬──────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Stage 2: Generate Figures                        │
+│                                                                     │
+│  result/generate_visualizations.py  → result/fig1 ~ fig14.png      │
+└──────────────────────────────┬──────────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────────┐
+│                    Stage 3: Code Statistics                         │
+│                                                                     │
+│  count_lines.py  → result/code_lines_visual.png                    │
+│                  → result/code_line_count.json                     │
+└─────────────────────────────────────────────────────────────────────┘
+```
+
+### Step-by-Step Execution
 
 ```bash
-# Basic network simulation without attacks
-python examples/basic_simulation.py
+# Step 1: Generate simulation data (results saved to output/ as JSON)
+python tests/integration/krand_advantage_simulation.py
+python tests/unit/compute_graph_paths.py
+python tests/unit/compute_routing_table.py
 
-# DDoS attack simulation
-python tests/integration/ddos_attack_simulation.py
+# Step 2: Generate all 14 figures (reads JSON from output/, saves PNG to result/)
+python result/generate_visualizations.py
+
+# Step 3: Generate code statistics dashboard (optional)
+python count_lines.py
 ```
+
+### Figure Catalog
+
+| Figure | Filename | Description |
+|--------|----------|-------------|
+| Fig 1 | `fig1_attack_cost_comparison.png` | Attack cost comparison across 5 routing algorithms (bar chart) |
+| Fig 2 | `fig2_network_topology_attack.png` | LEO 6×11 constellation topology with attack annotations |
+| Fig 3 | `fig3_p5_throughput_comparison.png` | 5th percentile throughput comparison across algorithms |
+| Fig 4 | `fig4_vulnerability_analysis.png` | Network vulnerability analysis flow diagram |
+| Fig 5 | `fig5_attacked_gs_paths.png` | Ground station paths through target ISL (horizontal split view) |
+| Fig 6 | `fig6_attacked_gs_traffic.png` | Ground station attack traffic volume (horizontal split view) |
+| Fig 7 | `fig7_graph_ksp.png` | KSP (K-Shortest Paths) graph-theoretic visualization |
+| Fig 8 | `fig8_graph_kds.png` | KDS (K-Disjoint Shortest) graph-theoretic visualization |
+| Fig 9 | `fig9_graph_kdg.png` | KDG (K-Disjoint Geodiverse) graph-theoretic visualization |
+| Fig 10 | `fig10_graph_klo.png` | KLO (K-Limited-Overlap) graph-theoretic visualization |
+| Fig 11 | `fig11_routing_table_ksp.png` | KSP complete routing table visualization |
+| Fig 12 | `fig12_routing_table_kds.png` | KDS complete routing table visualization |
+| Fig 13 | `fig13_routing_table_kdg.png` | KDG complete routing table visualization |
+| Fig 14 | `fig14_routing_table_klo.png` | KLO complete routing table visualization |
+| Extra | `code_lines_visual.png` | Code line statistics dashboard |
 
 ---
 
@@ -147,7 +255,7 @@ from leo_network import (
 constellation = LEOConstellation(
     num_planes=6,
     sats_per_plane=11,
-    isl_bandwidth_mbps=100.0  # Lower bandwidth for visible attack impact
+    isl_bandwidth_mbps=100.0
 )
 
 # Initialize simulator and attack generator
@@ -163,10 +271,10 @@ sim.add_random_normal_flows(num_flows=30)
 
 # Launch flooding attack on target satellites
 attack_gen.create_flooding_attack(
-    targets=["SAT_2_5", "SAT_3_5"],      # Target satellites
-    num_attackers=50,                      # Number of attack sources
-    total_rate=100000.0,                   # Total attack rate (pps)
-    strategy=AttackStrategy.DISTRIBUTED    # Source distribution strategy
+    targets=["SAT_2_5", "SAT_3_5"],
+    num_attackers=50,
+    total_rate=100000.0,
+    strategy=AttackStrategy.DISTRIBUTED
 )
 
 # Run simulation
@@ -179,55 +287,30 @@ attack_stats = results['statistics']['attack_traffic']
 
 print(f"Normal Traffic Delivery: {normal_stats['delivery_rate']:.2%}")
 print(f"Attack Traffic Delivery: {attack_stats['delivery_rate']:.2%}")
-print(f"Average Latency Impact: +{normal_stats['latency_increase_ms']:.1f} ms")
-
-# Get attack cost metrics
-attack_cost = results['attack_cost']['cost_metrics']
-print(f"Attack Cost: {attack_cost['attack_cost']:.2f}")
-print(f"Normal Packet Loss Rate: {attack_cost['normal_loss_rate']:.2%}")
-
-# Get 5th percentile throughput (worst-case performance)
-tp = results['throughput_percentiles']
-print(f"5th Percentile Throughput: {tp['p5_pps']:.2f} pps")
 ```
 
 ### 3. Comparing Routing Algorithms Under Attack
 
 ```python
 from leo_network import (
-    LEOConstellation,
-    Simulator,
-    DDoSAttackGenerator,
-    KShortestPathsRouter,
-    KDSRouter,
-    KDGRouter,
-    KLORouter,
-    AttackStrategy
+    LEOConstellation, Simulator, DDoSAttackGenerator,
+    KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter
 )
-from leo_network.core.visualization import plot_comparison
 
 results = {}
-
 for RouterClass in [KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter]:
-    # Fresh constellation for each test
     constellation = LEOConstellation(num_planes=6, sats_per_plane=11)
     router = RouterClass(constellation)
     sim = Simulator(constellation=constellation, router=router, seed=42)
     attack_gen = DDoSAttackGenerator(constellation, sim.traffic_generator, seed=42)
-    
-    # Add traffic and attacks
+
     sim.add_random_normal_flows(num_flows=30)
     attack_gen.create_flooding_attack(
-        targets=["SAT_2_5"],
-        num_attackers=30,
-        total_rate=50000.0
+        targets=["SAT_2_5"], num_attackers=30, total_rate=50000.0
     )
-    
+
     sim.run(duration=0.5)
     results[RouterClass.__name__] = sim.get_results()
-
-# Visualize comparison
-plot_comparison(results, output_dir="output/")
 ```
 
 ---
@@ -249,39 +332,29 @@ LEOConstellation(
 ```
 
 #### Routing Algorithms
-| Class | Description | Best For |
-|-------|-------------|----------|
-| `KShortestPathsRouter` | K shortest simple paths (k-SP) | Path diversity, baseline |
-| `KDSRouter` | K-Disjoint Shortest paths (k-DS) | Failure resilience |
-| `KDGRouter` | K-Disjoint Geodiverse paths (k-DG) | Localized attack defense |
-| `KLORouter` | K-Limited-Overlap paths (k-LO) | Adaptive load balancing |
 
-##### Advanced Disjoint Path Routers
+| Class | Algorithm | Description |
+|-------|-----------|-------------|
+| `KShortestPathsRouter` | k-SP | K shortest simple paths — path diversity baseline |
+| `KDSRouter` | k-DS | K-Disjoint Shortest paths — failure resilience via disjoint paths |
+| `KDGRouter` | k-DG | K-Disjoint Geodiverse paths — geographic separation against localized attacks |
+| `KLORouter` | k-LO | K-Limited-Overlap paths — adaptive load balancing with controlled overlap |
 
 ```python
-from leo_network import create_router, KDSRouter, KDGRouter, KLORouter
+from leo_network import create_router
+
+# KSP: K-Shortest Paths
+ksp_router = create_router("ksp", constellation, k=3)
 
 # KDS: K-Disjoint Shortest Paths
-# Computes K node/link-disjoint shortest paths for failure resilience
 kds_router = create_router("kds", constellation, k=3, disjoint_type="link")
-# Or: kds_router = KDSRouter(constellation, k=3, disjoint_type="node")
 
-# KDG: K-Disjoint Geodiverse Paths  
-# Maximizes geographic separation between paths for localized attack defense
+# KDG: K-Disjoint Geodiverse Paths
 kdg_router = create_router("kdg", constellation, k=3, diversity_weight=0.5)
-# Or: kdg_router = KDGRouter(constellation, k=3, diversity_weight=0.5)
 
-# KLO: K-Link-disjoint with Load Optimization
-# Dynamically selects best path based on current network load
+# KLO: K-Limited-Overlap with Load Optimization
 klo_router = create_router("klo", constellation, k=3, load_threshold=0.7)
-# Or: klo_router = KLORouter(constellation, k=3, load_threshold=0.7, recompute_interval=100)
 ```
-
-| Router | Parameters | Description |
-|--------|------------|-------------|
-| `KDSRouter` | `k`: Number of paths<br>`disjoint_type`: "link" or "node" | Link-disjoint avoids shared edges; Node-disjoint avoids shared intermediate nodes |
-| `KDGRouter` | `k`: Number of paths<br>`diversity_weight`: 0.0-1.0 | Higher weight prioritizes geographic diversity over path length |
-| `KLORouter` | `k`: Number of paths<br>`load_threshold`: 0.0-1.0<br>`recompute_interval`: packets | Switches paths when link utilization exceeds threshold |
 
 #### Simulator
 ```python
@@ -290,25 +363,10 @@ sim.add_random_normal_flows(num_flows, rate_range=(100, 1000))
 sim.run(duration=1.0)
 sim.get_results() -> dict
 sim.print_results()
-
-# Attack cost analysis
-sim.get_attack_cost() -> dict           # Get attack cost metrics
-sim.get_attack_cost_summary() -> dict   # Get detailed cost summary
-sim.get_5th_percentile_throughput() -> dict  # Get worst-case throughput
+sim.get_attack_cost() -> dict
+sim.get_attack_cost_summary() -> dict
+sim.get_5th_percentile_throughput() -> dict
 ```
-
-#### Attack Cost Metrics
-| Metric | Description | Formula |
-|--------|-------------|---------|
-| `attack_cost` | Attack efficiency measure | Attack Traffic (Mbps) / Normal Loss Rate |
-| `normalized_cost` | Cost to achieve target loss | Attack Traffic × (Target Rate / Actual Rate) |
-| `induced_loss_rate` | Loss caused by attack | Current Loss - Baseline Loss |
-
-#### 5th Percentile Throughput
-The 5th percentile throughput represents the worst-case network performance:
-- 95% of time windows have throughput **above** this value
-- Lower values indicate more severe attack impact
-- Used to evaluate network resilience under DDoS attacks
 
 ### Attacks Module (`leo_network.attacks`)
 
@@ -326,9 +384,10 @@ attack_gen.create_link_targeted_attack(target_links, num_attackers, rate)
 attack_gen.create_bottleneck_attack(bottleneck_nodes, num_attackers, rate)
 ```
 
-#### Attack Types (`AttackType`)
-| Type | Description |
-|------|-------------|
+#### Attack Types & Strategies
+
+| Attack Type | Description |
+|-------------|-------------|
 | `FLOODING` | High-volume UDP/ICMP floods |
 | `REFLECTION` | Amplification attacks using reflectors |
 | `SLOWLORIS` | Slow application-layer attacks |
@@ -337,9 +396,8 @@ attack_gen.create_bottleneck_attack(bottleneck_nodes, num_attackers, rate)
 | `LINK_TARGETED` | Attacks targeting specific ISL links |
 | `BOTTLENECK` | Attacks on network bottleneck nodes |
 
-#### Attack Strategies (`AttackStrategy`)
-| Strategy | Description |
-|----------|-------------|
+| Attack Strategy | Description |
+|-----------------|-------------|
 | `RANDOM` | Random source selection |
 | `DISTRIBUTED` | Evenly distributed sources |
 | `CLUSTERED` | Geographically clustered sources |
@@ -349,88 +407,42 @@ attack_gen.create_bottleneck_attack(bottleneck_nodes, num_attackers, rate)
 
 ## 🧪 Testing
 
-### Run All Tests
-
 ```bash
-# Unit tests
+# Quick functionality verification
 python tests/unit/quick_test.py
-python tests/unit/debug_attack.py
-python tests/unit/debug_flows.py
 
-# Integration tests
+# DDoS simulation verification
+python tests/unit/ddos_simulation_verify.py
+
+# Ground station analysis
+python tests/unit/attack_gs_analysis.py
+python tests/unit/gs_cost_comparison.py
+
+# Full DDoS simulation
 python tests/integration/ddos_attack_simulation.py
+
+# Targeted ISL attack simulation
+python tests/integration/targeted_isl_attack.py
+
+# Routing algorithm comparison
 python tests/integration/router_comparison.py
 ```
 
-### Expected Test Results
-
-| Test Scenario | Overall Delivery | Normal Traffic | Attack Impact |
-|--------------|------------------|----------------|---------------|
-| Baseline (no attack) | 99.34% | 99.34% | N/A |
-| Medium Flooding | 89.82% | 99.57% | +9.59% latency |
-| Pulsing Attack | 70.15% | 97.72% | +29.39% latency |
-| Reflection Attack | 79.56% | 98.55% | +19.91% latency |
-| High-rate Flooding | 58.47% | 96.71% | +41.15% latency |
-
-### Routing Algorithm Comparison (Under Attack)
-
-| Algorithm | Attack Cost | Normal Loss Rate | 5% Throughput |
-|-----------|-------------|------------------|---------------|
-| ShortestPath | 11444.96 | 3.50% | Baseline |
-| ECMP | 11615.78 | 3.45% | +1.5% |
-| Randomized | 11791.77 | 3.40% | +2.3% |
-| KDS (k=3) | 12150.32 | 3.30% | +3.1% |
-| KDG (k=3) | 12380.45 | 3.24% | +3.8% |
-| KLO (k=3) | 12520.18 | 3.20% | +4.2% |
-
-> **Note**: Higher attack cost = better defense (attacker needs more traffic to cause same damage)
-
 ---
 
-## 📊 Output Examples
+## �️ Roadmap
 
-Running simulations generates output in the `output/` directory:
-
-- `topology_*.png` - Network topology visualization
-- `traffic_heatmap_*.png` - Link utilization heatmaps
-- `latency_distribution_*.png` - Latency CDF plots
-- `attack_comparison_*.png` - Before/after attack metrics
-- `simulation_results_*.json` - Detailed statistics in JSON format
-
----
-
-## 🛠️ Configuration
-
-### Environment Variables
-
-```bash
-export LEO_SIM_OUTPUT_DIR="./output"     # Output directory
-export LEO_SIM_LOG_LEVEL="INFO"          # Logging level
-export LEO_SIM_RANDOM_SEED="42"          # Default random seed
-```
-
-### Constellation Presets
-
-```python
-from leo_network.core.topology import STARLINK_SHELL1, ONEWEB, IRIDIUM
-
-# Use predefined constellation configurations
-constellation = LEOConstellation(**STARLINK_SHELL1)
-```
-
----
-
-## 🗺️ Roadmap
-
-- [x] **Attack Cost Metrics**: Measure attack efficiency and defense effectiveness
+- [x] **Core Network Simulation**: Walker constellation, ISL, GSL modeling
+- [x] **DDoS Attack Simulation**: 7 attack types, 4 attack strategies
+- [x] **Attack Cost Metrics**: Attack efficiency and defense effectiveness measurement
 - [x] **5th Percentile Throughput**: Worst-case performance evaluation
-- [x] **Advanced Defense Algorithms**: KDS, KDG, KLO disjoint routing algorithms
-- [ ] **K-Bottleneck Minimize**: Advanced bottleneck-aware routing
+- [x] **Advanced K-Routing Algorithms**: KSP, KDS, KDG, KLO disjoint routing
+- [x] **14 Publication Figures**: Automated figure generation pipeline
+- [x] **Graph-Theoretic Visualization**: Algorithm path visualization on network graphs
+- [x] **Routing Table Visualization**: Complete routing table display for 4 algorithms
 - [ ] **Dynamic Topology**: Time-varying satellite positions and link handoffs
 - [ ] **Parallel Simulation**: Multi-threaded execution for large constellations
 - [ ] **Machine Learning Integration**: ML-based attack detection and routing
-- [ ] **Real Orbital Data**: TLE-based satellite position calculation
-- [ ] **GUI Dashboard**: Web-based visualization and control interface
 
 ---
 
