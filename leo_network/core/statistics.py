@@ -95,6 +95,21 @@ class StatisticsCollector:
         self.window_bytes_delivered: int = 0  # Bytes delivered in current window
         self.window_packets_delivered: int = 0  # Packets delivered in current window
         
+        # Per-window throughput tracking for NORMAL traffic only
+        self.window_normal_throughput_pps: List[float] = []
+        self.window_normal_throughput_mbps: List[float] = []
+        self.window_normal_bytes_delivered: int = 0
+        self.window_normal_packets_delivered: int = 0
+        
+        # Per-window throughput tracking for TARGET ISL normal traffic only
+        # (only normal packets whose path traverses the target ISL)
+        self.target_isl: Optional[Tuple[str, str]] = None  # e.g. ("SAT_4_2", "SAT_4_3")
+        self.window_target_isl_normal_throughput_pps: List[float] = []
+        self.window_target_isl_normal_throughput_mbps: List[float] = []
+        self.window_target_isl_normal_bytes_delivered: int = 0
+        self.window_target_isl_normal_packets_delivered: int = 0
+        self.target_isl_normal_packets_total: int = 0
+        
         # Snapshot storage
         self.snapshots: List[Dict] = []
     
@@ -103,12 +118,17 @@ class StatisticsCollector:
         self.packets_sent += 1
         self.bytes_sent += packet_size
     
+    def set_target_isl(self, node_a: str, node_b: str):
+        """Set the target ISL to track separately"""
+        self.target_isl = (node_a, node_b)
+    
     def record_packet_delivered(
         self,
         packet_size: int,
         delay: float,
         hop_count: int,
-        is_attack: bool = False
+        is_attack: bool = False,
+        traverses_target_isl: bool = False
     ):
         """Record successful packet delivery"""
         self.packets_delivered += 1
@@ -124,6 +144,14 @@ class StatisticsCollector:
             self.attack_packets_delivered += 1
         else:
             self.normal_packets_delivered += 1
+            self.window_normal_bytes_delivered += packet_size
+            self.window_normal_packets_delivered += 1
+            
+            # Track target ISL normal traffic
+            if traverses_target_isl:
+                self.target_isl_normal_packets_total += 1
+                self.window_target_isl_normal_bytes_delivered += packet_size
+                self.window_target_isl_normal_packets_delivered += 1
     
     def record_packet_dropped(self, packet_size: int, is_attack: bool = False):
         """Record packet drop"""
@@ -164,9 +192,33 @@ class StatisticsCollector:
         self.window_throughput_pps.append(window_throughput_pps)
         self.window_throughput_mbps.append(window_throughput_mbps)
         
+        # Calculate normal-only throughput for this window
+        if window_duration > 0:
+            window_normal_tp_pps = self.window_normal_packets_delivered / window_duration
+            window_normal_tp_mbps = (self.window_normal_bytes_delivered * 8) / (window_duration * 1e6)
+        else:
+            window_normal_tp_pps = 0.0
+            window_normal_tp_mbps = 0.0
+        self.window_normal_throughput_pps.append(window_normal_tp_pps)
+        self.window_normal_throughput_mbps.append(window_normal_tp_mbps)
+        
+        # Calculate target ISL normal-only throughput for this window
+        if window_duration > 0:
+            window_target_isl_tp_pps = self.window_target_isl_normal_packets_delivered / window_duration
+            window_target_isl_tp_mbps = (self.window_target_isl_normal_bytes_delivered * 8) / (window_duration * 1e6)
+        else:
+            window_target_isl_tp_pps = 0.0
+            window_target_isl_tp_mbps = 0.0
+        self.window_target_isl_normal_throughput_pps.append(window_target_isl_tp_pps)
+        self.window_target_isl_normal_throughput_mbps.append(window_target_isl_tp_mbps)
+        
         # Reset window counters
         self.window_packets_delivered = 0
         self.window_bytes_delivered = 0
+        self.window_normal_packets_delivered = 0
+        self.window_normal_bytes_delivered = 0
+        self.window_target_isl_normal_packets_delivered = 0
+        self.window_target_isl_normal_bytes_delivered = 0
         
         snapshot = {
             "timestamp": timestamp,
@@ -283,6 +335,30 @@ class StatisticsCollector:
         """
         return self.get_throughput_percentile_mbps(5)
     
+    def get_normal_throughput_percentile_pps(self, p: float) -> float:
+        """Get throughput percentile for NORMAL traffic only (pps)"""
+        if not self.window_normal_throughput_pps:
+            return 0.0
+        return float(np.percentile(self.window_normal_throughput_pps, p))
+    
+    def get_normal_throughput_percentile_mbps(self, p: float) -> float:
+        """Get throughput percentile for NORMAL traffic only (Mbps)"""
+        if not self.window_normal_throughput_mbps:
+            return 0.0
+        return float(np.percentile(self.window_normal_throughput_mbps, p))
+    
+    def get_target_isl_normal_throughput_percentile_pps(self, p: float) -> float:
+        """Get throughput percentile for normal traffic traversing the target ISL (pps)"""
+        if not self.window_target_isl_normal_throughput_pps:
+            return 0.0
+        return float(np.percentile(self.window_target_isl_normal_throughput_pps, p))
+    
+    def get_target_isl_normal_throughput_percentile_mbps(self, p: float) -> float:
+        """Get throughput percentile for normal traffic traversing the target ISL (Mbps)"""
+        if not self.window_target_isl_normal_throughput_mbps:
+            return 0.0
+        return float(np.percentile(self.window_target_isl_normal_throughput_mbps, p))
+    
     def get_normal_traffic_stats(self) -> Dict:
         """Get statistics for normal (non-attack) traffic"""
         total_normal = self.normal_packets_delivered + self.normal_packets_dropped
@@ -343,6 +419,28 @@ class StatisticsCollector:
                 "p50_pps": self.get_throughput_percentile_pps(50),
                 "p50_mbps": self.get_throughput_percentile_mbps(50),
             },
+            "normal_throughput": {
+                "p5_pps": self.get_normal_throughput_percentile_pps(5),
+                "p5_mbps": self.get_normal_throughput_percentile_mbps(5),
+                "p10_pps": self.get_normal_throughput_percentile_pps(10),
+                "p10_mbps": self.get_normal_throughput_percentile_mbps(10),
+                "p50_pps": self.get_normal_throughput_percentile_pps(50),
+                "p50_mbps": self.get_normal_throughput_percentile_mbps(50),
+                "avg_pps": float(np.mean(self.window_normal_throughput_pps)) if self.window_normal_throughput_pps else 0.0,
+                "avg_mbps": float(np.mean(self.window_normal_throughput_mbps)) if self.window_normal_throughput_mbps else 0.0,
+            },
+            "target_isl_normal_throughput": {
+                "target_isl": f"{self.target_isl[0]} <-> {self.target_isl[1]}" if self.target_isl else "N/A",
+                "total_normal_packets": self.target_isl_normal_packets_total,
+                "p5_pps": self.get_target_isl_normal_throughput_percentile_pps(5),
+                "p5_mbps": self.get_target_isl_normal_throughput_percentile_mbps(5),
+                "p10_pps": self.get_target_isl_normal_throughput_percentile_pps(10),
+                "p10_mbps": self.get_target_isl_normal_throughput_percentile_mbps(10),
+                "p50_pps": self.get_target_isl_normal_throughput_percentile_pps(50),
+                "p50_mbps": self.get_target_isl_normal_throughput_percentile_mbps(50),
+                "avg_pps": float(np.mean(self.window_target_isl_normal_throughput_pps)) if self.window_target_isl_normal_throughput_pps else 0.0,
+                "avg_mbps": float(np.mean(self.window_target_isl_normal_throughput_mbps)) if self.window_target_isl_normal_throughput_mbps else 0.0,
+            },
             "delay": {
                 "avg_ms": self.get_average_delay(),
                 "p50_ms": self.get_delay_percentile(50),
@@ -385,6 +483,16 @@ class StatisticsCollector:
         self.window_throughput_mbps = []
         self.window_bytes_delivered = 0
         self.window_packets_delivered = 0
+        self.window_normal_throughput_pps = []
+        self.window_normal_throughput_mbps = []
+        self.window_normal_bytes_delivered = 0
+        self.window_normal_packets_delivered = 0
+        # Reset target ISL tracking
+        self.window_target_isl_normal_throughput_pps = []
+        self.window_target_isl_normal_throughput_mbps = []
+        self.window_target_isl_normal_bytes_delivered = 0
+        self.window_target_isl_normal_packets_delivered = 0
+        self.target_isl_normal_packets_total = 0
         self.snapshots = []
     
     def to_dataframe(self) -> pd.DataFrame:

@@ -68,6 +68,9 @@ class Simulator:
         # Initialize statistics collector
         self.stats = StatisticsCollector()
         
+        # Target ISL for per-link throughput tracking
+        self.target_isl: Optional[tuple] = None
+        
         # Initialize attack cost calculator
         self.cost_calculator = AttackCostCalculator()
         
@@ -359,11 +362,13 @@ class Simulator:
                 packet.arrival_time = self.current_time
                 completed_packets.append(packet)
                 is_attack = (packet.packet_type == PacketType.ATTACK)
+                traverses_target = self._packet_traverses_target_isl(packet)
                 self.stats.record_packet_delivered(
                     packet.size,
                     delay=packet.get_delay() * 1000,  # Convert to ms
                     hop_count=packet.hops_taken,
-                    is_attack=is_attack
+                    is_attack=is_attack,
+                    traverses_target_isl=traverses_target
                 )
                 self.traffic_generator.record_packet_delivery(
                     packet, self.current_time
@@ -425,6 +430,22 @@ class Simulator:
         self.traffic_generator.reset_all_stats()
         self.constellation.reset_all_stats()
     
+    def set_target_isl(self, node_a: str, node_b: str):
+        """Set target ISL to track for per-link throughput stats"""
+        self.target_isl = (node_a, node_b)
+        self.stats.set_target_isl(node_a, node_b)
+    
+    def _packet_traverses_target_isl(self, packet) -> bool:
+        """Check if a packet's path traverses the target ISL"""
+        if self.target_isl is None:
+            return False
+        a, b = self.target_isl
+        path = packet.path
+        for i in range(len(path) - 1):
+            if (path[i] == a and path[i+1] == b) or (path[i] == b and path[i+1] == a):
+                return True
+        return False
+    
     def set_router(self, router: Router):
         """Change routing algorithm"""
         self.router = router
@@ -455,7 +476,18 @@ class Simulator:
                 "p50_mbps": stats_summary["throughput"]["p50_mbps"],
                 "avg_pps": stats_summary["throughput"]["avg_pps"],
                 "avg_mbps": stats_summary["throughput"]["avg_mbps"],
-            }
+            },
+            "normal_throughput_percentiles": {
+                "p5_pps": stats_summary["normal_throughput"]["p5_pps"],
+                "p5_mbps": stats_summary["normal_throughput"]["p5_mbps"],
+                "p10_pps": stats_summary["normal_throughput"]["p10_pps"],
+                "p10_mbps": stats_summary["normal_throughput"]["p10_mbps"],
+                "p50_pps": stats_summary["normal_throughput"]["p50_pps"],
+                "p50_mbps": stats_summary["normal_throughput"]["p50_mbps"],
+                "avg_pps": stats_summary["normal_throughput"]["avg_pps"],
+                "avg_mbps": stats_summary["normal_throughput"]["avg_mbps"],
+            },
+            "target_isl_normal_throughput_percentiles": stats_summary["target_isl_normal_throughput"],
         }
     
     def print_results(self):

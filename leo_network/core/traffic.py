@@ -167,15 +167,20 @@ class TrafficGenerator:
         self.rng = np.random.default_rng(seed)
         if seed is not None:
             random.seed(seed)
+        # Fractional accumulator for each flow to handle
+        # low-rate flows where rate * time_step < 1
+        self._flow_accumulators: Dict[str, float] = {}
     
     def add_flow(self, flow: Flow):
         """Add a traffic flow"""
         self.flows[flow.id] = flow
+        self._flow_accumulators[flow.id] = 0.0
     
     def remove_flow(self, flow_id: str):
         """Remove a traffic flow"""
         if flow_id in self.flows:
             del self.flows[flow_id]
+        self._flow_accumulators.pop(flow_id, None)
     
     def create_normal_flow(
         self,
@@ -292,7 +297,7 @@ class TrafficGenerator:
             
             # Calculate number of packets to generate
             num_packets = self._calculate_num_packets(
-                current_rate, time_step, flow.pattern
+                flow.id, current_rate, time_step, flow.pattern
             )
             
             for _ in range(num_packets):
@@ -312,15 +317,26 @@ class TrafficGenerator:
     
     def _calculate_num_packets(
         self,
+        flow_id: str,
         rate: float,
         time_step: float,
         pattern: TrafficPattern
     ) -> int:
-        """Calculate number of packets to generate based on pattern"""
+        """
+        Calculate number of packets to generate based on pattern.
+        
+        Uses a fractional accumulator per flow so that low-rate flows
+        (where rate * time_step < 1.0) still correctly generate packets
+        over multiple time steps.
+        """
         expected = rate * time_step
         
         if pattern == TrafficPattern.CONSTANT:
-            return int(expected)
+            # Accumulate fractional packets across time steps
+            accumulated = self._flow_accumulators.get(flow_id, 0.0) + expected
+            num = int(accumulated)
+            self._flow_accumulators[flow_id] = accumulated - num
+            return num
         
         elif pattern == TrafficPattern.POISSON:
             return self.rng.poisson(expected)
@@ -412,6 +428,9 @@ class TrafficGenerator:
         for flow in self.flows.values():
             flow.reset_stats()
         self.packet_counter = 0
+        # Reset accumulators
+        for flow_id in self._flow_accumulators:
+            self._flow_accumulators[flow_id] = 0.0
     
     def get_active_flows(self, current_time: float) -> List[Flow]:
         """Get list of currently active flows"""
