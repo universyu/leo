@@ -211,25 +211,43 @@ class Simulator:
         duration: float = -1.0
     ):
         """
-        Add distributed DDoS attack from multiple sources
+        Add distributed DDoS attack from multiple ground station sources.
+        
+        In a realistic DDoS model, attackers deploy bots at ground stations.
+        The target should also be a ground station. If no ground stations are
+        available, falls back to satellite nodes with a warning.
         
         Args:
-            num_attackers: Number of attack sources
-            target: Target node ID
+            num_attackers: Number of attack sources (ground stations)
+            target: Target node ID (should be a ground station)
             total_rate: Total attack rate (divided among attackers)
             start_time: Attack start time
             duration: Attack duration
         """
-        nodes = list(self.constellation.satellites.keys())
-        # Remove target from potential attackers
-        if target in nodes:
-            nodes.remove(target)
+        gs_nodes = list(self.constellation.ground_stations.keys())
         
-        # Select random attackers
-        if num_attackers > len(nodes):
-            num_attackers = len(nodes)
+        if len(gs_nodes) < 2:
+            # Fallback: no ground stations, use satellites
+            import warnings
+            warnings.warn(
+                "No ground stations available for DDoS attack sources. "
+                "Call constellation.add_global_ground_stations() first. "
+                "Falling back to satellite nodes.",
+                UserWarning
+            )
+            nodes = list(self.constellation.satellites.keys())
+            if target in nodes:
+                nodes.remove(target)
+            if num_attackers > len(nodes):
+                num_attackers = len(nodes)
+            attackers = self.rng.choice(nodes, size=num_attackers, replace=False)
+        else:
+            # Select from ground stations
+            available = [gs for gs in gs_nodes if gs != target]
+            if num_attackers > len(available):
+                num_attackers = len(available)
+            attackers = self.rng.choice(available, size=num_attackers, replace=False)
         
-        attackers = self.rng.choice(nodes, size=num_attackers, replace=False)
         rate_per_attacker = total_rate / num_attackers
         
         for attacker in attackers:

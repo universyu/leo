@@ -170,8 +170,8 @@ def main():
     # Define attack scenarios
     print("\n[3] Running Attack Scenarios...")
     
-    # Select some targets
-    target_sats = ["SAT_2_5", "SAT_3_5"]  # Central satellites
+    # Select some targets (ground stations, not satellites)
+    target_gs = ["GS_NewYork", "GS_London"]  # Target ground stations
     
     all_results = {"baseline": baseline_results}
     
@@ -183,7 +183,7 @@ def main():
             seed=42
         )
         return attack_gen.create_flooding_attack(
-            targets=target_sats,
+            targets=target_gs,
             num_attackers=15,
             total_rate=8000.0,
             start_time=0.0,
@@ -202,7 +202,7 @@ def main():
             "name": "Medium Flooding (30 attackers, 50000 pps)",
             "attack_type": "flooding",
             "params": {
-                "targets": target_sats,
+                "targets": target_gs,
                 "num_attackers": 30,
                 "total_rate": 50000.0,
                 "strategy": AttackStrategy.DISTRIBUTED
@@ -212,7 +212,7 @@ def main():
             "name": "Pulsing Attack (20 attackers, 80000 pps peak)",
             "attack_type": "pulsing", 
             "params": {
-                "targets": target_sats,
+                "targets": target_gs,
                 "num_attackers": 20,
                 "peak_rate": 80000.0,
                 "pulse_on_time": 0.05,
@@ -223,7 +223,7 @@ def main():
             "name": "Reflection Attack (10 attackers, 10x amplification)",
             "attack_type": "reflection",
             "params": {
-                "targets": target_sats,
+                "targets": target_gs,
                 "num_attackers": 10,
                 "total_rate": 5000.0,
                 "amplification_factor": 10.0
@@ -233,7 +233,7 @@ def main():
             "name": "High-Volume Flooding (50 attackers, 100000 pps)",
             "attack_type": "flooding",
             "params": {
-                "targets": target_sats,
+                "targets": target_gs,
                 "num_attackers": 50,
                 "total_rate": 100000.0,
                 "strategy": AttackStrategy.DISTRIBUTED

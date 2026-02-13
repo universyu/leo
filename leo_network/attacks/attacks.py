@@ -293,15 +293,27 @@ class DDoSAttackGenerator:
         Returns:
             Attack ID
         """
-        # Auto-select reflectors if not provided
+        # Auto-select reflectors from ground stations if not provided
         if reflectors is None:
-            all_nodes = list(self.constellation.satellites.keys())
-            # Exclude targets from reflectors
-            available = [n for n in all_nodes if n not in targets]
-            num_reflectors = min(num_attackers * 2, len(available))
-            reflectors = list(self.rng.choice(
-                available, size=num_reflectors, replace=False
-            ))
+            all_gs = list(self.constellation.ground_stations.keys())
+            if all_gs:
+                # Exclude targets from reflectors
+                available = [gs for gs in all_gs if gs not in targets]
+                num_reflectors = min(num_attackers * 2, len(available))
+                if num_reflectors > 0:
+                    reflectors = list(self.rng.choice(
+                        available, size=num_reflectors, replace=False
+                    ))
+                else:
+                    reflectors = available
+            else:
+                # Fallback: use satellites if no ground stations
+                all_nodes = list(self.constellation.satellites.keys())
+                available = [n for n in all_nodes if n not in targets]
+                num_reflectors = min(num_attackers * 2, len(available))
+                reflectors = list(self.rng.choice(
+                    available, size=num_reflectors, replace=False
+                ))
         
         config = AttackConfig(
             attack_type=AttackType.REFLECTION,
@@ -560,11 +572,33 @@ class DDoSAttackGenerator:
         return attack_id
     
     def _select_attackers(self, config: AttackConfig) -> List[str]:
-        """Select attack sources based on strategy"""
-        all_nodes = list(self.constellation.satellites.keys())
+        """
+        Select attack sources from ground stations.
+        
+        In a realistic DDoS scenario, attackers deploy bots at ground stations
+        (not on satellites). The bots send traffic from ground stations through
+        the satellite network to other ground stations, causing ISL congestion.
+        """
+        all_gs = list(self.constellation.ground_stations.keys())
+        
+        if not all_gs:
+            # Fallback: no ground stations available, warn and use satellites
+            import warnings
+            warnings.warn(
+                "No ground stations available for attack source selection. "
+                "Call constellation.add_global_ground_stations() first. "
+                "Falling back to satellite nodes.",
+                UserWarning
+            )
+            all_nodes = list(self.constellation.satellites.keys())
+            available = [n for n in all_nodes if n not in config.targets]
+            num_attackers = min(config.num_attackers, len(available))
+            if num_attackers == 0:
+                return []
+            return list(self.rng.choice(available, size=num_attackers, replace=False))
         
         # Remove targets from potential attackers
-        available = [n for n in all_nodes if n not in config.targets]
+        available = [n for n in all_gs if n not in config.targets]
         
         num_attackers = min(config.num_attackers, len(available))
         
@@ -575,45 +609,55 @@ class DDoSAttackGenerator:
             return list(self.rng.choice(available, size=num_attackers, replace=False))
         
         elif config.strategy == AttackStrategy.DISTRIBUTED:
-            # Select attackers distributed across different planes
-            planes = {}
-            for node in available:
-                sat = self.constellation.satellites[node]
-                if sat.plane_id not in planes:
-                    planes[sat.plane_id] = []
-                planes[sat.plane_id].append(node)
+            # Select attackers distributed across different geographic regions
+            # Group ground stations by rough geographic region (longitude bands)
+            regions = {}
+            for gs_id in available:
+                gs = self.constellation.ground_stations[gs_id]
+                # Divide into 6 longitude bands of 60 degrees each
+                lon = gs.position[1]
+                region_id = int((lon + 180) / 60) % 6
+                if region_id not in regions:
+                    regions[region_id] = []
+                regions[region_id].append(gs_id)
             
             attackers = []
-            plane_ids = list(planes.keys())
-            max_iterations = num_attackers * 2  # Safety limit
+            region_ids = list(regions.keys())
+            max_iterations = num_attackers * 3  # Safety limit
             iterations = 0
             
-            while len(attackers) < num_attackers and plane_ids and iterations < max_iterations:
+            while len(attackers) < num_attackers and region_ids and iterations < max_iterations:
                 iterations += 1
-                plane_id = plane_ids[iterations % len(plane_ids)]
-                if planes[plane_id]:
-                    attacker = self.rng.choice(planes[plane_id])
+                region_id = region_ids[iterations % len(region_ids)]
+                if regions[region_id]:
+                    attacker = self.rng.choice(regions[region_id])
                     attackers.append(attacker)
-                    planes[plane_id].remove(attacker)
-                    if not planes[plane_id]:
-                        plane_ids.remove(plane_id)
+                    regions[region_id].remove(attacker)
+                    if not regions[region_id]:
+                        region_ids.remove(region_id)
             
             return attackers
         
         elif config.strategy == AttackStrategy.CLUSTERED:
-            # Select attackers from a few adjacent planes
+            # Select attackers from a single geographic region
             if not available:
                 return []
             
-            # Pick a random starting plane
+            # Pick a random starting ground station
             first = self.rng.choice(available)
-            first_plane = self.constellation.satellites[first].plane_id
+            first_gs = self.constellation.ground_stations[first]
+            first_lon = first_gs.position[1]
+            first_lat = first_gs.position[0]
             
-            # Select from this plane and adjacent planes
+            # Select from nearby ground stations (within ~40 degrees)
             clustered = [
-                n for n in available
-                if abs(self.constellation.satellites[n].plane_id - first_plane) <= 1
+                gs_id for gs_id in available
+                if abs(self.constellation.ground_stations[gs_id].position[1] - first_lon) <= 40
+                and abs(self.constellation.ground_stations[gs_id].position[0] - first_lat) <= 30
             ]
+            
+            if not clustered:
+                clustered = available  # Fallback
             
             return list(self.rng.choice(
                 clustered, 
@@ -622,11 +666,40 @@ class DDoSAttackGenerator:
             ))
         
         elif config.strategy == AttackStrategy.PATH_ALIGNED:
-            # Select attackers that will route through target links
-            # This is a simplified version - in practice would use path analysis
+            # Select ground stations whose routes pass through target links
+            # Simplified: just select from all available ground stations
             return list(self.rng.choice(available, size=num_attackers, replace=False))
         
         return []
+    
+    def _select_attack_destinations(self, config: AttackConfig, attackers: List[str]) -> List[str]:
+        """
+        Select attack destinations.
+        
+        If config.targets are ground stations, use them directly.
+        If config.targets are satellite nodes (legacy), auto-select ground station
+        destinations to ensure realistic ground-to-ground traffic.
+        """
+        gs_ids = set(self.constellation.ground_stations.keys())
+        
+        # Check if targets are already ground stations
+        if config.targets and all(t in gs_ids for t in config.targets):
+            return config.targets
+        
+        # If targets are satellites or empty, select ground station destinations
+        # that are different from attackers
+        available_dst = [gs for gs in gs_ids if gs not in attackers]
+        if not available_dst:
+            available_dst = list(gs_ids)
+        
+        if config.targets:
+            # Legacy: targets were satellites, select matching number of GS destinations
+            num_targets = len(config.targets)
+        else:
+            num_targets = min(len(attackers), len(available_dst))
+        
+        num_targets = min(num_targets, len(available_dst))
+        return list(self.rng.choice(available_dst, size=num_targets, replace=False))
     
     def _create_standard_flows(
         self, 
@@ -634,15 +707,25 @@ class DDoSAttackGenerator:
         config: AttackConfig, 
         attackers: List[str]
     ):
-        """Create standard attack flows"""
-        if not attackers or not config.targets:
+        """
+        Create standard attack flows (ground station to ground station).
+        
+        Attack traffic flows from attacker ground stations to destination
+        ground stations, traversing the satellite network via GSL -> ISL -> GSL.
+        """
+        if not attackers:
+            return
+        
+        # Resolve destinations to ground stations
+        destinations = self._select_attack_destinations(config, attackers)
+        if not destinations:
             return
         
         rate_per_attacker = config.total_rate / len(attackers)
         
         for i, attacker in enumerate(attackers):
-            # Round-robin target selection
-            target = config.targets[i % len(config.targets)]
+            # Round-robin target selection among destinations
+            target = destinations[i % len(destinations)]
             
             flow = AttackFlow(
                 flow_id=f"{attack_id}_flow_{i}",
@@ -667,8 +750,34 @@ class DDoSAttackGenerator:
         config: AttackConfig, 
         attackers: List[str]
     ):
-        """Create reflection attack flows"""
-        if not attackers or not config.reflectors or not config.targets:
+        """
+        Create reflection attack flows.
+        
+        Attackers (ground stations) send small requests to reflector ground stations,
+        which respond with amplified traffic to target ground stations.
+        """
+        if not attackers or not config.targets:
+            return
+        
+        # Resolve destinations
+        destinations = self._select_attack_destinations(config, attackers)
+        if not destinations:
+            return
+        
+        # If reflectors not specified, auto-select ground stations as reflectors
+        reflectors = config.reflectors
+        if not reflectors:
+            gs_ids = list(self.constellation.ground_stations.keys())
+            available = [gs for gs in gs_ids if gs not in attackers and gs not in destinations]
+            if not available:
+                available = [gs for gs in gs_ids if gs not in attackers]
+            num_reflectors = min(len(attackers) * 2, len(available))
+            if num_reflectors > 0:
+                reflectors = list(self.rng.choice(available, size=num_reflectors, replace=False))
+            else:
+                reflectors = available
+        
+        if not reflectors:
             return
         
         # Attackers send to reflectors, reflectors "respond" to targets
@@ -676,8 +785,8 @@ class DDoSAttackGenerator:
         
         for i, attacker in enumerate(attackers):
             # Select reflector
-            reflector = config.reflectors[i % len(config.reflectors)]
-            target = config.targets[i % len(config.targets)]
+            reflector = reflectors[i % len(reflectors)]
+            target = destinations[i % len(destinations)]
             
             # Flow from attacker to reflector (small packets)
             trigger_flow = AttackFlow(
@@ -709,55 +818,72 @@ class DDoSAttackGenerator:
             self.traffic_generator.add_flow(amplified_flow)
     
     def _create_bottleneck_flows(self, attack_id: str, config: AttackConfig):
-        """Create flows targeting specific bottleneck links"""
+        """
+        Create flows targeting specific bottleneck links.
+        
+        Uses ground stations as both attack sources and destinations.
+        Selects GS pairs whose geographic positions would likely route
+        traffic through the target ISL links.
+        """
         if not config.target_links:
             return
         
-        # For each target link, find source-destination pairs that use it
-        all_nodes = list(self.constellation.satellites.keys())
+        all_gs = list(self.constellation.ground_stations.keys())
+        if len(all_gs) < 2:
+            import warnings
+            warnings.warn(
+                "Not enough ground stations for bottleneck attack. "
+                "Call constellation.add_global_ground_stations() first.",
+                UserWarning
+            )
+            return
+        
         rate_per_link = config.total_rate / len(config.target_links)
         
         flow_idx = 0
-        for src_node, dst_node in config.target_links:
-            # Find nodes that would route through this link
-            # Simplified: use nodes from planes adjacent to the link endpoints
-            
-            src_sat = self.constellation.satellites.get(src_node)
-            dst_sat = self.constellation.satellites.get(dst_node)
+        for link_src, link_dst in config.target_links:
+            # Get link endpoint satellite positions for geographic filtering
+            src_sat = self.constellation.satellites.get(link_src)
+            dst_sat = self.constellation.satellites.get(link_dst)
             
             if not src_sat or not dst_sat:
                 continue
             
-            # Select attackers from "before" the link
-            before_nodes = [
-                n for n in all_nodes
-                if self.constellation.satellites[n].plane_id <= src_sat.plane_id
+            # Select source GS from one side and destination GS from the other
+            # based on longitude relative to the ISL endpoints
+            mid_lon = (src_sat.position[1] + dst_sat.position[1]) / 2
+            
+            before_gs = [
+                gs_id for gs_id in all_gs
+                if self.constellation.ground_stations[gs_id].position[1] <= mid_lon
+            ]
+            after_gs = [
+                gs_id for gs_id in all_gs
+                if self.constellation.ground_stations[gs_id].position[1] > mid_lon
             ]
             
-            # Select targets "after" the link
-            after_nodes = [
-                n for n in all_nodes
-                if self.constellation.satellites[n].plane_id >= dst_sat.plane_id
-            ]
-            
-            if not before_nodes or not after_nodes:
-                continue
+            # Fallback: if geographic split doesn't work, just split randomly
+            if not before_gs or not after_gs:
+                half = len(all_gs) // 2
+                before_gs = all_gs[:half]
+                after_gs = all_gs[half:]
             
             attackers_for_link = min(
                 config.num_attackers // len(config.target_links),
-                len(before_nodes)
+                len(before_gs)
             )
             
             selected_attackers = list(self.rng.choice(
-                before_nodes, size=max(1, attackers_for_link), replace=False
+                before_gs, size=max(1, attackers_for_link), replace=False
             ))
             selected_targets = list(self.rng.choice(
-                after_nodes, size=max(1, attackers_for_link), replace=False
+                after_gs, size=max(1, min(attackers_for_link, len(after_gs))), replace=False
             ))
             
             rate_per_attacker = rate_per_link / len(selected_attackers)
             
-            for attacker, target in zip(selected_attackers, selected_targets):
+            for i, attacker in enumerate(selected_attackers):
+                target = selected_targets[i % len(selected_targets)]
                 flow = AttackFlow(
                     flow_id=f"{attack_id}_flow_{flow_idx}",
                     source=attacker,
@@ -1298,9 +1424,9 @@ class DDoSAttackGenerator:
         """
         Create a targeted attack designed to congest a specific ISL link.
         
-        This attack selects source-destination pairs whose routes (as computed
-        by the given router) traverse the target link, ensuring maximum traffic
-        concentration on that link.
+        Attack sources and destinations are ground stations (realistic DDoS model).
+        Selects GS-to-GS pairs whose routes (computed by the given router)
+        traverse the target ISL link, ensuring maximum traffic concentration.
         
         Args:
             target_link: (src_node, dst_node) tuple of the target ISL link
@@ -1315,15 +1441,30 @@ class DDoSAttackGenerator:
             Attack ID
         """
         link_src, link_dst = target_link
-        nodes = list(self.constellation.satellites.keys())
+        gs_nodes = list(self.constellation.ground_stations.keys())
         
-        # Find source-destination pairs that route through the target link
+        if len(gs_nodes) < 2:
+            import warnings
+            warnings.warn(
+                "Not enough ground stations for targeted ISL attack. "
+                "Call constellation.add_global_ground_stations() first.",
+                UserWarning
+            )
+            return self.create_bottleneck_attack(
+                target_links=[target_link],
+                num_attackers=num_attackers,
+                total_rate=total_rate,
+                start_time=start_time,
+                duration=duration
+            )
+        
+        # Find GS-to-GS pairs whose routes traverse the target link
         passing_pairs: List[Tuple[str, str, List[str]]] = []
         
-        for src in nodes:
+        for src in gs_nodes:
             if len(passing_pairs) >= num_attackers * 3:
                 break
-            for dst in nodes:
+            for dst in gs_nodes:
                 if src == dst:
                     continue
                 if len(passing_pairs) >= num_attackers * 3:
@@ -1339,8 +1480,8 @@ class DDoSAttackGenerator:
                             break
         
         if not passing_pairs:
-            # Fallback: use nodes near the link endpoints
-            print(f"  [WARNING] No direct path through {target_link} found, using proximity attack")
+            # Fallback: use geographic proximity approach
+            print(f"  [WARNING] No GS-to-GS path through {target_link} found, using proximity attack")
             return self.create_bottleneck_attack(
                 target_links=[target_link],
                 num_attackers=num_attackers,
