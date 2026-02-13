@@ -67,6 +67,8 @@ def create_constellation() -> LEOConstellation:
         inclination_deg=53.0,
         isl_bandwidth_mbps=ISL_BANDWIDTH_MBPS,
     )
+    # Add globally distributed ground stations (paper-scale ~40 stations)
+    constellation.add_global_ground_stations()
     return constellation
 
 

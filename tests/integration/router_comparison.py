@@ -52,18 +52,18 @@ def main():
         sats_per_plane=11,
         altitude_km=550.0
     )
-    print(f"  {constellation}")
     
-    # Define routers to compare
+    # Add globally distributed ground stations (paper-scale ~40 stations)
+    gs_ids = constellation.add_global_ground_stations()
+    print(f"  {constellation}")
+    print(f"  Ground Stations: {len(gs_ids)}")
+    
+    # Define routers to compare (paper's 4 routing algorithms)
     routers_config = [
-        ("Shortest Path", "shortest", {}),
         ("K-SP (k=3)", "ksp", {"k": 3}),
-        ("ECMP", "ecmp", {"max_paths": 4}),
-        ("Load-Aware", "load_aware", {"k": 3, "load_weight": 0.5}),
-        ("Randomized", "random", {"k": 5, "temperature": 1.0}),
-        ("KDS (k=3)", "kds", {"k": 3, "disjoint_type": "link"}),
-        ("KDG (k=3)", "kdg", {"k": 3, "diversity_weight": 0.5}),
-        ("KLO (k=3)", "klo", {"k": 3, "load_threshold": 0.7}),
+        ("K-DS (k=3)", "kds", {"k": 3, "disjoint_type": "link"}),
+        ("K-DG (k=3)", "kdg", {"k": 3, "diversity_weight": 0.5}),
+        ("K-LO (k=3)", "klo", {"k": 3, "load_threshold": 0.7}),
     ]
     
     results = {}

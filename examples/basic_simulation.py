@@ -20,11 +20,10 @@ from leo_network import (
     LEOConstellation,
     TrafficGenerator,
     TrafficPattern,
-    ShortestPathRouter, 
     KShortestPathsRouter,
-    ECMPRouter,
-    LoadAwareRouter,
-    RandomizedRouter,
+    KDSRouter,
+    KDGRouter,
+    KLORouter,
     StatisticsCollector,
     Simulator
 )
@@ -63,27 +62,19 @@ def main():
     print(f"  Total satellites: {len(constellation.satellites)}")
     print(f"  Total ISL links: {len(constellation.links)}")
     
-    # Add some ground stations
-    print("\n[2] Adding Ground Stations...")
+    # Add globally distributed ground stations (paper-scale ~40 stations)
+    print("\n[2] Adding Global Ground Stations...")
     
-    ground_stations = [
-        ("GS_Beijing", 39.9, 116.4),
-        ("GS_NewYork", 40.7, -74.0),
-        ("GS_London", 51.5, -0.1),
-        ("GS_Sydney", -33.9, 151.2),
-    ]
-    
-    for gs_id, lat, lon in ground_stations:
-        constellation.add_ground_station(gs_id, lat, lon)
-        print(f"  Added {gs_id} at ({lat}, {lon})")
+    gs_ids = constellation.add_global_ground_stations()
+    print(f"  Added {len(gs_ids)} ground stations worldwide")
     
     # =====================================================
     # Step 2: Create Router
     # =====================================================
     print("\n[3] Creating Router...")
     
-    # Use shortest path router for baseline
-    router = ShortestPathRouter(constellation)
+    # Use k-shortest path router for baseline
+    router = KShortestPathsRouter(constellation)
     print(f"  Router: {router.name}")
     
     # =====================================================
@@ -103,26 +94,11 @@ def main():
     # =====================================================
     print("\n[5] Adding Traffic Flows...")
     
-    # Add random normal traffic flows between satellites
-    print("  Adding 20 random normal flows...")
+    # Add random normal traffic flows between ground stations (paper model)
+    print("  Adding 20 random normal flows (ground-station to ground-station)...")
     simulator.add_random_normal_flows(
         num_flows=20,
         rate_range=(50, 200),  # 50-200 packets/s per flow
-        packet_size=1000
-    )
-    
-    # Add some specific flows between ground stations
-    print("  Adding ground station flows...")
-    simulator.add_normal_traffic(
-        source="GS_Beijing",
-        destination="GS_NewYork",
-        rate=100,
-        packet_size=1000
-    )
-    simulator.add_normal_traffic(
-        source="GS_London",
-        destination="GS_Sydney",
-        rate=100,
         packet_size=1000
     )
     

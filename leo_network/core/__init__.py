@@ -28,11 +28,7 @@ from .traffic import (
 
 from .routing import (
     Router,
-    ShortestPathRouter,
     KShortestPathsRouter,
-    ECMPRouter,
-    LoadAwareRouter,
-    RandomizedRouter,
     KDSRouter,
     KDGRouter,
     KLORouter,
@@ -74,11 +70,7 @@ __all__ = [
     'TrafficGenerator',
     # Routing
     'Router',
-    'ShortestPathRouter',
     'KShortestPathsRouter',
-    'ECMPRouter',
-    'LoadAwareRouter',
-    'RandomizedRouter',
     'KDSRouter',
     'KDGRouter',
     'KLORouter',

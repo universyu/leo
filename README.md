@@ -104,7 +104,7 @@ python tests/integration/ddos_attack_simulation.py
 ### 1. Basic Network Simulation
 
 ```python
-from leo_network import LEOConstellation, Simulator, ShortestPathRouter
+from leo_network import LEOConstellation, Simulator, KShortestPathsRouter
 
 # Create a Walker constellation (6 planes × 11 satellites = 66 satellites)
 constellation = LEOConstellation(
@@ -116,7 +116,7 @@ constellation = LEOConstellation(
 )
 
 # Initialize simulator with routing algorithm
-router = ShortestPathRouter(constellation.graph)
+router = KShortestPathsRouter(constellation)
 sim = Simulator(constellation=constellation, router=router, seed=42)
 
 # Add normal traffic flows
@@ -198,19 +198,20 @@ from leo_network import (
     LEOConstellation,
     Simulator,
     DDoSAttackGenerator,
-    ShortestPathRouter,
-    ECMPRouter,
-    LoadAwareRouter,
+    KShortestPathsRouter,
+    KDSRouter,
+    KDGRouter,
+    KLORouter,
     AttackStrategy
 )
 from leo_network.core.visualization import plot_comparison
 
 results = {}
 
-for RouterClass in [ShortestPathRouter, ECMPRouter, LoadAwareRouter]:
+for RouterClass in [KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter]:
     # Fresh constellation for each test
     constellation = LEOConstellation(num_planes=6, sats_per_plane=11)
-    router = RouterClass(constellation.graph)
+    router = RouterClass(constellation)
     sim = Simulator(constellation=constellation, router=router, seed=42)
     attack_gen = DDoSAttackGenerator(constellation, sim.traffic_generator, seed=42)
     
@@ -250,14 +251,10 @@ LEOConstellation(
 #### Routing Algorithms
 | Class | Description | Best For |
 |-------|-------------|----------|
-| `ShortestPathRouter` | Dijkstra shortest path | Baseline, low latency |
-| `KShortestPathsRouter` | K alternative paths | Path diversity |
-| `ECMPRouter` | Equal-cost multi-path | Load distribution |
-| `LoadAwareRouter` | Congestion-aware routing | High traffic scenarios |
-| `RandomizedRouter` | Randomized path selection | DDoS mitigation |
-| `KDSRouter` | K-Disjoint Shortest paths | Failure resilience |
-| `KDGRouter` | K-Disjoint Geodiverse paths | Localized attack defense |
-| `KLORouter` | K-Link-disjoint Load Optimized | Adaptive load balancing |
+| `KShortestPathsRouter` | K shortest simple paths (k-SP) | Path diversity, baseline |
+| `KDSRouter` | K-Disjoint Shortest paths (k-DS) | Failure resilience |
+| `KDGRouter` | K-Disjoint Geodiverse paths (k-DG) | Localized attack defense |
+| `KLORouter` | K-Limited-Overlap paths (k-LO) | Adaptive load balancing |
 
 ##### Advanced Disjoint Path Routers
 

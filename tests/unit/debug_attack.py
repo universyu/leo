@@ -42,14 +42,8 @@ def run_attack_test(
         isl_bandwidth_mbps=isl_bandwidth_mbps
     )
     
-    # Add ground stations
-    for gs_id, lat, lon in [
-        ("GS_Beijing", 39.9, 116.4),
-        ("GS_NewYork", 40.7, -74.0),
-        ("GS_London", 51.5, -0.1),
-        ("GS_Sydney", -33.9, 151.2),
-    ]:
-        constellation.add_ground_station(gs_id, lat, lon)
+    # Add globally distributed ground stations (paper-scale ~40 stations)
+    constellation.add_global_ground_stations()
     
     print(f"\n--- Network Configuration ---")
     print(f"  Satellites: {len(constellation.satellites)}")
@@ -63,9 +57,8 @@ def run_attack_test(
     sim = Simulator(constellation=constellation, time_step=0.001, seed=42)
     attack_gen = DDoSAttackGenerator(constellation, sim.traffic_generator, seed=42)
     
-    # Add normal traffic
+    # Add normal traffic (ground-station to ground-station per the paper)
     sim.add_random_normal_flows(num_flows=20, rate_range=(50, 200))
-    sim.add_normal_traffic("GS_Beijing", "GS_NewYork", rate=100)
     
     # Create flooding attack
     attack_id = attack_gen.create_flooding_attack(

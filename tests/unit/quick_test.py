@@ -60,22 +60,21 @@ def test_routing():
     print("Testing routing module...")
     from leo_network import LEOConstellation
     from leo_network import (
-        ShortestPathRouter,
         KShortestPathsRouter,
         create_router
     )
     
     constellation = LEOConstellation(num_planes=4, sats_per_plane=6)
     
-    # Test shortest path
-    router = ShortestPathRouter(constellation)
+    # Test k-shortest path
+    router = KShortestPathsRouter(constellation)
     path = router.compute_path("SAT_0_0", "SAT_2_3")
     
     assert path is not None, "No path found"
     assert path[0] == "SAT_0_0", "Path start wrong"
     assert path[-1] == "SAT_2_3", "Path end wrong"
     
-    print(f"  ✓ Shortest path: {len(path)} hops")
+    print(f"  ✓ K-Shortest path (k=1 default): {len(path)} hops")
     
     # Test K-shortest paths
     k_router = KShortestPathsRouter(constellation, k=3)
@@ -85,7 +84,7 @@ def test_routing():
     print(f"  ✓ K-shortest paths: found {len(k_paths)} paths")
     
     # Test factory function
-    for router_type in ["shortest", "ksp", "ecmp", "load_aware", "random"]:
+    for router_type in ["ksp", "kds", "kdg", "klo"]:
         r = create_router(router_type, constellation)
         assert r is not None, f"Failed to create {router_type} router"
     

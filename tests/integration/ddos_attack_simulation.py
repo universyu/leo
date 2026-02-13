@@ -24,7 +24,10 @@ import numpy as np
 from leo_network import (
     LEOConstellation,
     TrafficGenerator,
-    ShortestPathRouter,
+    KShortestPathsRouter,
+    KDSRouter,
+    KDGRouter,
+    KLORouter,
     Simulator,
     DDoSAttackGenerator,
     AttackType,
@@ -47,7 +50,7 @@ def run_attack_scenario(
     print(f"{'='*60}")
     
     # Create fresh simulator
-    router = ShortestPathRouter(constellation)
+    router = KShortestPathsRouter(constellation)
     sim = Simulator(
         constellation=constellation,
         router=router,
@@ -63,12 +66,8 @@ def run_attack_scenario(
     )
     
     # Add normal traffic (same as baseline)
+    # All normal flows are now ground-station to ground-station per the paper
     sim.add_random_normal_flows(num_flows=20, rate_range=(50, 200))
-    
-    # Add ground station flows
-    if "GS_Beijing" in constellation.ground_stations:
-        sim.add_normal_traffic("GS_Beijing", "GS_NewYork", rate=100)
-        sim.add_normal_traffic("GS_London", "GS_Sydney", rate=100)
     
     # Launch attack
     print(f"Launching attack...")
@@ -146,15 +145,8 @@ def main():
         isl_bandwidth_mbps=100.0  # Lower bandwidth to demonstrate congestion
     )
     
-    # Add ground stations
-    ground_stations = [
-        ("GS_Beijing", 39.9, 116.4),
-        ("GS_NewYork", 40.7, -74.0),
-        ("GS_London", 51.5, -0.1),
-        ("GS_Sydney", -33.9, 151.2),
-    ]
-    for gs_id, lat, lon in ground_stations:
-        constellation.add_ground_station(gs_id, lat, lon)
+    # Add globally distributed ground stations (paper-scale ~40 stations)
+    constellation.add_global_ground_stations()
     
     print(f"  Satellites: {len(constellation.satellites)}")
     print(f"  Links: {len(constellation.links)}")
@@ -164,13 +156,11 @@ def main():
     print("\n[2] Running Baseline (No Attack)...")
     baseline_sim = Simulator(
         constellation=constellation,
-        router=ShortestPathRouter(constellation),
+        router=KShortestPathsRouter(constellation),
         time_step=0.001,
         seed=42
     )
     baseline_sim.add_random_normal_flows(num_flows=20, rate_range=(50, 200))
-    baseline_sim.add_normal_traffic("GS_Beijing", "GS_NewYork", rate=100)
-    baseline_sim.add_normal_traffic("GS_London", "GS_Sydney", rate=100)
     baseline_sim.run(duration=1.0, progress_bar=True)
     baseline_results = baseline_sim.get_results()
     
@@ -253,7 +243,7 @@ def main():
     
     for scenario in scenarios:
         # Create fresh simulator
-        router = ShortestPathRouter(constellation)
+        router = KShortestPathsRouter(constellation)
         sim = Simulator(
             constellation=constellation,
             router=router,
@@ -268,10 +258,8 @@ def main():
             seed=42
         )
         
-        # Add normal traffic
+        # Add normal traffic (ground-station to ground-station per the paper)
         sim.add_random_normal_flows(num_flows=20, rate_range=(50, 200))
-        sim.add_normal_traffic("GS_Beijing", "GS_NewYork", rate=100)
-        sim.add_normal_traffic("GS_London", "GS_Sydney", rate=100)
         
         # Launch attack
         print(f"\n{'='*60}")

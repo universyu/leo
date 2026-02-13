@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from .topology import LEOConstellation
 from .traffic import TrafficGenerator, Packet, PacketType
-from .routing import Router, ShortestPathRouter, create_router
+from .routing import Router, KShortestPathsRouter, create_router
 from .statistics import StatisticsCollector, AttackCostCalculator
 
 
@@ -51,7 +51,7 @@ class Simulator:
         
         # Initialize router
         if router is None:
-            self.router = ShortestPathRouter(constellation)
+            self.router = KShortestPathsRouter(constellation)
         else:
             self.router = router
         
@@ -143,20 +143,49 @@ class Simulator:
         packet_size: int = 1000
     ):
         """
-        Add multiple random normal traffic flows
+        Add multiple random normal traffic flows between ground stations.
+        
+        Following the paper's traffic model, all normal traffic originates
+        from ground stations and terminates at ground stations, traversing
+        the satellite network via uplink -> ISL -> downlink paths.
+        
+        If fewer than 2 ground stations are available, falls back to
+        satellite-to-satellite flows with a warning.
         
         Args:
             num_flows: Number of flows to create
             rate_range: (min, max) rate in packets per second
             packet_size: Packet size in bytes
         """
-        nodes = list(self.constellation.satellites.keys())
-        if len(self.constellation.ground_stations) > 0:
-            nodes.extend(list(self.constellation.ground_stations.keys()))
+        gs_nodes = list(self.constellation.ground_stations.keys())
+        
+        if len(gs_nodes) < 2:
+            # Fallback: not enough ground stations, warn and use satellites
+            import warnings
+            warnings.warn(
+                f"Only {len(gs_nodes)} ground station(s) available. "
+                f"Normal traffic should originate from ground stations per the paper's model. "
+                f"Call constellation.add_global_ground_stations() first. "
+                f"Falling back to satellite nodes.",
+                UserWarning
+            )
+            nodes = list(self.constellation.satellites.keys())
+            if gs_nodes:
+                nodes.extend(gs_nodes)
+            for i in range(num_flows):
+                src, dst = self.rng.choice(nodes, size=2, replace=False)
+                rate = self.rng.uniform(rate_range[0], rate_range[1])
+                self.add_normal_traffic(
+                    source=src,
+                    destination=dst,
+                    rate=rate,
+                    packet_size=packet_size
+                )
+            return
         
         for i in range(num_flows):
-            # Random source and destination
-            src, dst = self.rng.choice(nodes, size=2, replace=False)
+            # Random source and destination ground stations
+            src, dst = self.rng.choice(gs_nodes, size=2, replace=False)
             rate = self.rng.uniform(rate_range[0], rate_range[1])
             
             self.add_normal_traffic(
@@ -485,7 +514,7 @@ def run_basic_simulation(
     sats_per_plane: int = 11,
     num_normal_flows: int = 20,
     simulation_duration: float = 1.0,
-    router_type: str = "shortest",
+    router_type: str = "ksp",
     seed: Optional[int] = 42
 ) -> Dict:
     """
@@ -507,6 +536,9 @@ def run_basic_simulation(
         num_planes=num_planes,
         sats_per_plane=sats_per_plane
     )
+    
+    # Add globally distributed ground stations (paper-scale)
+    constellation.add_global_ground_stations()
     
     # Create router
     router = create_router(router_type, constellation)

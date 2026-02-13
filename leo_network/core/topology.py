@@ -450,22 +450,50 @@ class LEOConstellation:
         gs_id: str, 
         latitude: float, 
         longitude: float,
-        gsl_bandwidth_mbps: float = 1000.0
+        gsl_bandwidth_mbps: float = 1000.0,
+        min_connections: int = 3
     ):
         """
-        Add a ground station and connect to visible satellites
+        Add a ground station and connect to visible satellites.
+        
+        If fewer than min_connections satellites are visible (due to static
+        snapshot limitations), the station is connected to the nearest
+        satellites regardless of elevation angle. This is reasonable since
+        LEO satellites move rapidly and any station will have visibility
+        over time.
         
         Args:
             gs_id: Ground station identifier
             latitude: Latitude in degrees
             longitude: Longitude in degrees
             gsl_bandwidth_mbps: Ground-satellite link bandwidth
+            min_connections: Minimum number of satellite connections per GS
         """
         gs = GroundStation(id=gs_id, position=(latitude, longitude))
         self.ground_stations[gs_id] = gs
         
         # Find visible satellites and create GSL
         visible_sats = self._find_visible_satellites(latitude, longitude)
+        
+        # Fallback: if not enough visible satellites, connect to nearest ones
+        # This compensates for the static snapshot limitation of our model
+        if len(visible_sats) < min_connections:
+            # Calculate distance to all satellites and pick closest ones
+            sat_distances = []
+            for sat_id, sat in self.satellites.items():
+                dist = self._calculate_ground_sat_distance(
+                    latitude, longitude, sat.position
+                )
+                sat_distances.append((sat_id, dist))
+            sat_distances.sort(key=lambda x: x[1])
+            
+            # Merge visible + nearest, keeping unique, up to min_connections
+            connected_set = set(visible_sats)
+            for sat_id, _ in sat_distances:
+                if len(connected_set) >= min_connections:
+                    break
+                connected_set.add(sat_id)
+            visible_sats = list(connected_set)
         
         for sat_id in visible_sats:
             gs.connected_sats.append(sat_id)
@@ -572,6 +600,93 @@ class LEOConstellation:
             (gs_x - sat_x)**2 + (gs_y - sat_y)**2 + (gs_z - sat_z)**2
         )
         return distance
+    
+    def add_global_ground_stations(
+        self,
+        gsl_bandwidth_mbps: float = 1000.0,
+        min_elevation_deg: float = 25.0
+    ) -> List[str]:
+        """
+        Add globally distributed ground stations matching paper/ICARUS scale.
+        
+        Creates ~40 ground stations covering major cities and regions worldwide,
+        ensuring attackers can be distributed across a vast geographical area
+        as described in the paper's DDoS threat model.
+        
+        Args:
+            gsl_bandwidth_mbps: Ground-satellite link bandwidth in Mbps
+            min_elevation_deg: Minimum elevation angle for satellite visibility
+            
+        Returns:
+            List of ground station IDs that were added
+        """
+        # Globally distributed ground stations (~40 locations)
+        # Covering all continents within the constellation's coverage zone
+        # (latitude roughly within ±53° for 53° inclination)
+        global_stations = [
+            # North America (8 stations)
+            ("GS_NewYork", 40.7, -74.0),
+            ("GS_LosAngeles", 34.1, -118.2),
+            ("GS_Chicago", 41.9, -87.6),
+            ("GS_Toronto", 43.7, -79.4),
+            ("GS_Houston", 29.8, -95.4),
+            ("GS_Seattle", 47.6, -122.3),
+            ("GS_MexicoCity", 19.4, -99.1),
+            ("GS_Miami", 25.8, -80.2),
+            
+            # Europe (8 stations)
+            ("GS_London", 51.5, -0.1),
+            ("GS_Paris", 48.9, 2.4),
+            ("GS_Berlin", 52.5, 13.4),
+            ("GS_Moscow", 55.8, 37.6),  # Note: near inclination limit
+            ("GS_Rome", 41.9, 12.5),
+            ("GS_Madrid", 40.4, -3.7),
+            ("GS_Istanbul", 41.0, 29.0),
+            ("GS_Stockholm", 59.3, 18.1),  # Note: near inclination limit
+            
+            # Asia (8 stations)
+            ("GS_Beijing", 39.9, 116.4),
+            ("GS_Shanghai", 31.2, 121.5),
+            ("GS_Tokyo", 35.7, 139.7),
+            ("GS_Seoul", 37.6, 127.0),
+            ("GS_Mumbai", 19.1, 72.9),
+            ("GS_Delhi", 28.6, 77.2),
+            ("GS_Bangkok", 13.8, 100.5),
+            ("GS_Singapore", 1.4, 103.8),
+            
+            # South America (5 stations)
+            ("GS_SaoPaulo", -23.6, -46.6),
+            ("GS_BuenosAires", -34.6, -58.4),
+            ("GS_Lima", -12.0, -77.0),
+            ("GS_Bogota", 4.6, -74.1),
+            ("GS_Santiago", -33.4, -70.7),
+            
+            # Africa (4 stations)
+            ("GS_Cairo", 30.0, 31.2),
+            ("GS_Lagos", 6.5, 3.4),
+            ("GS_Nairobi", -1.3, 36.8),
+            ("GS_Johannesburg", -26.2, 28.0),
+            
+            # Oceania (3 stations)
+            ("GS_Sydney", -33.9, 151.2),
+            ("GS_Melbourne", -37.8, 145.0),
+            ("GS_Auckland", -36.8, 174.8),
+            
+            # Middle East (2 stations)
+            ("GS_Dubai", 25.3, 55.3),
+            ("GS_TelAviv", 32.1, 34.8),
+        ]
+        
+        added_stations = []
+        for gs_id, lat, lon in global_stations:
+            # Skip if already added
+            if gs_id in self.ground_stations:
+                added_stations.append(gs_id)
+                continue
+            self.add_ground_station(gs_id, lat, lon, gsl_bandwidth_mbps)
+            added_stations.append(gs_id)
+        
+        return added_stations
     
     def get_link(self, src: str, dst: str) -> Optional[Link]:
         """Get link between two nodes"""

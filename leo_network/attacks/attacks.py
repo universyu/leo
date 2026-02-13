@@ -20,7 +20,7 @@ import random
 import math
 
 from ..core.traffic import TrafficGenerator, Flow, Packet, PacketType, TrafficPattern
-from ..core.routing import Router, ShortestPathRouter, KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter
+from ..core.routing import Router, KShortestPathsRouter, KDSRouter, KDGRouter, KLORouter
 
 
 class AttackType(Enum):
@@ -907,7 +907,7 @@ class DDoSAttackGenerator:
         is the one traversed by the most flows (highest betweenness).
         
         Args:
-            router: ShortestPathRouter instance
+            router: Router instance (e.g., KShortestPathsRouter with k=1)
             num_sample_pairs: Number of random source-destination pairs to sample
             
         Returns:
