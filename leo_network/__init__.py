@@ -29,6 +29,7 @@ from .core import (
     KDSRouter,
     KDGRouter,
     KLORouter,
+    KRandRouter,
     create_router,
     # Statistics
     StatisticsCollector,
@@ -79,6 +80,7 @@ __all__ = [
     'KDSRouter',
     'KDGRouter',
     'KLORouter',
+    'KRandRouter',
     'create_router',
     # Core - Statistics
     'StatisticsCollector',

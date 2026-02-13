@@ -32,6 +32,7 @@ from .routing import (
     KDSRouter,
     KDGRouter,
     KLORouter,
+    KRandRouter,
     create_router
 )
 
@@ -74,6 +75,7 @@ __all__ = [
     'KDSRouter',
     'KDGRouter',
     'KLORouter',
+    'KRandRouter',
     'create_router',
     # Statistics
     'StatisticsCollector',

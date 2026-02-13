@@ -55,6 +55,13 @@ class Simulator:
         else:
             self.router = router
         
+        # Pre-compute routing table for all ground station pairs
+        # Since routing algorithms are static and ground stations are fixed,
+        # we can compute all routes once to avoid repeated computation
+        if self.constellation.ground_stations:
+            print(f"Pre-computing routing table for {self.router.name}...")
+            self.router.precompute_ground_station_routes()
+        
         # Initialize traffic generator
         self.traffic_generator = TrafficGenerator(seed=seed)
         

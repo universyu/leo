@@ -63,7 +63,10 @@ class Router(ABC):
     
     def route_packet(self, packet: Packet) -> bool:
         """
-        Route a packet by computing and assigning its path
+        Route a packet by computing and assigning its path.
+        
+        First checks the pre-computed routing table (if built),
+        then falls back to on-demand path computation.
         
         Args:
             packet: Packet to route
@@ -71,7 +74,18 @@ class Router(ABC):
         Returns:
             True if path was found, False otherwise
         """
-        path = self.compute_path(packet.source, packet.destination)
+        src, dst = packet.source, packet.destination
+        
+        # Check pre-computed routing table first
+        if src in self.routing_table and dst in self.routing_table[src]:
+            entry = self.routing_table[src][dst]
+            if entry.valid:
+                packet.path = list(entry.path)  # Copy to avoid mutation
+                packet.current_hop = 0
+                return True
+        
+        # Fallback to on-demand computation
+        path = self.compute_path(src, dst)
         if path:
             packet.path = path
             packet.current_hop = 0
@@ -95,6 +109,51 @@ class Router(ABC):
                             path=path,
                             metric=metric
                         )
+    
+    def precompute_ground_station_routes(self):
+        """
+        Pre-compute routing table for all ground station pairs.
+        
+        Since routing algorithms are static and deterministic, and
+        ground stations are fixed, we can compute all routes once
+        at initialization to avoid repeated computation at runtime.
+        
+        This computes routes for all (src_gs, dst_gs) pairs where
+        both src and dst are ground stations.
+        """
+        gs_nodes = [
+            node for node in self.constellation.graph.nodes()
+            if node.startswith("GS_")
+        ]
+        
+        if len(gs_nodes) < 2:
+            return
+        
+        total_pairs = len(gs_nodes) * (len(gs_nodes) - 1)
+        computed = 0
+        failed = 0
+        
+        for src in gs_nodes:
+            if src not in self.routing_table:
+                self.routing_table[src] = {}
+            for dst in gs_nodes:
+                if src == dst:
+                    continue
+                path = self.compute_path(src, dst)
+                if path and len(path) > 1:
+                    metric = self._calculate_path_metric(path)
+                    self.routing_table[src][dst] = RouteEntry(
+                        destination=dst,
+                        next_hop=path[1],
+                        path=path,
+                        metric=metric
+                    )
+                    computed += 1
+                else:
+                    failed += 1
+        
+        print(f"  Pre-computed {computed}/{total_pairs} ground station routes "
+              f"({failed} unreachable pairs)")
     
     def _calculate_path_metric(self, path: List[str]) -> float:
         """Calculate path metric (total delay by default)"""
@@ -143,6 +202,7 @@ class KShortestPathsRouter(Router):
         self.k = k
         self.weight = weight
         self.name = f"K{k}ShortestPathsRouter"
+        self.path_cache: Dict[Tuple[str, str], List[List[str]]] = {}
     
     def compute_k_paths(
         self,
@@ -150,7 +210,7 @@ class KShortestPathsRouter(Router):
         destination: str
     ) -> List[List[str]]:
         """
-        Compute K shortest paths
+        Compute K shortest paths (with caching)
         
         Args:
             source: Source node ID
@@ -159,6 +219,10 @@ class KShortestPathsRouter(Router):
         Returns:
             List of K shortest paths (each path is a list of node IDs)
         """
+        key = (source, destination)
+        if key in self.path_cache:
+            return self.path_cache[key]
+        
         try:
             # Use islice to avoid computing all paths (generator)
             from itertools import islice
@@ -170,8 +234,10 @@ class KShortestPathsRouter(Router):
             )
             # Only take first k paths from generator
             paths = list(islice(path_generator, self.k))
+            self.path_cache[key] = paths
             return paths
         except (nx.NetworkXNoPath, nx.NodeNotFound):
+            self.path_cache[key] = []
             return []
     
     def compute_path(
@@ -554,6 +620,158 @@ class KLORouter(Router):
         return self.kds_router.compute_k_disjoint_paths(source, destination)
 
 
+class KRandRouter(Router):
+    """
+    K-RAND Router (Paper's Algorithm 1)
+    
+    Randomly selects one of four routing algorithms (k-SP, k-DG, k-DS, k-LO)
+    with weighted probability distribution for each packet routing decision.
+    
+    This increases the uncertainty for an attacker who knows the network
+    topology, because the attacker cannot predict which algorithm will be
+    used for any given packet, forcing them to cover all possible paths
+    across all algorithms.
+    
+    The weights (a1, a2, a3) determine the selection probabilities:
+      - P(k-SP) = a1
+      - P(k-DG) = a2 - a1
+      - P(k-DS) = a3 - a2  
+      - P(k-LO) = 1 - a3
+    """
+    
+    def __init__(
+        self,
+        constellation: LEOConstellation,
+        k: int = 3,
+        weights: Optional[Dict[str, float]] = None,
+        seed: Optional[int] = None
+    ):
+        """
+        Initialize K-RAND router
+        
+        Args:
+            constellation: LEO constellation topology
+            k: Number of paths for each sub-algorithm
+            weights: Dict of algorithm weights, e.g. {"ksp": 0.25, "kdg": 0.25, "kds": 0.25, "klo": 0.25}
+                     If None, uses equal weights (0.25 each)
+            seed: Random seed for reproducibility
+        """
+        super().__init__(constellation)
+        self.k = k
+        self.name = f"KRand{k}Router"
+        self.rng = np.random.default_rng(seed)
+        
+        # Default: equal weights for all 4 algorithms
+        if weights is None:
+            self.weights = {"ksp": 0.25, "kdg": 0.25, "kds": 0.25, "klo": 0.25}
+        else:
+            self.weights = weights
+        
+        # Normalize weights
+        total = sum(self.weights.values())
+        self.weights = {k: v/total for k, v in self.weights.items()}
+        
+        # Create sub-routers
+        self.sub_routers: Dict[str, Router] = {
+            "ksp": KShortestPathsRouter(constellation, k=k),
+            "kdg": KDGRouter(constellation, k=k),
+            "kds": KDSRouter(constellation, k=k),
+            "klo": KLORouter(constellation, k=k),
+        }
+        
+        # Pre-build algorithm selection arrays for efficiency
+        self.algo_names = list(self.weights.keys())
+        self.algo_probs = np.array([self.weights[name] for name in self.algo_names])
+    
+    def compute_path(
+        self,
+        source: str,
+        destination: str
+    ) -> Optional[List[str]]:
+        """
+        Compute path by randomly selecting one of the 4 algorithms.
+        
+        For each routing decision, generate random variable A in [0,1]
+        and select algorithm based on weighted distribution (Algorithm 1).
+        """
+        # Random algorithm selection (Paper's Algorithm 1)
+        selected_algo = self.rng.choice(self.algo_names, p=self.algo_probs)
+        router = self.sub_routers[selected_algo]
+        return router.compute_path(source, destination)
+    
+    def compute_path_with_algo(
+        self,
+        source: str,
+        destination: str,
+        algo_name: str
+    ) -> Optional[List[str]]:
+        """
+        Compute path using a specific sub-algorithm (for analysis).
+        """
+        if algo_name in self.sub_routers:
+            return self.sub_routers[algo_name].compute_path(source, destination)
+        return None
+    
+    def get_all_possible_paths(
+        self,
+        source: str,
+        destination: str
+    ) -> Dict[str, List[List[str]]]:
+        """
+        Get all possible paths from all sub-algorithms.
+        
+        This represents the full path space an attacker must cover.
+        
+        Returns:
+            Dict mapping algorithm name to list of k paths
+        """
+        all_paths = {}
+        
+        ksp = self.sub_routers["ksp"]
+        if isinstance(ksp, KShortestPathsRouter):
+            all_paths["ksp"] = ksp.compute_k_paths(source, destination)
+        
+        kds = self.sub_routers["kds"]
+        if isinstance(kds, KDSRouter):
+            all_paths["kds"] = kds.compute_k_disjoint_paths(source, destination)
+        
+        kdg = self.sub_routers["kdg"]
+        if isinstance(kdg, KDGRouter):
+            all_paths["kdg"] = kdg.compute_k_geodiverse_paths(source, destination)
+        
+        klo = self.sub_routers["klo"]
+        if isinstance(klo, KLORouter):
+            all_paths["klo"] = klo.get_all_disjoint_paths(source, destination)
+        
+        return all_paths
+    
+    def precompute_ground_station_routes(self):
+        """
+        Pre-compute routes for all sub-routers.
+        
+        Note: For k-RAND, we pre-compute routes for ALL sub-routers,
+        but the routing table is NOT used at runtime (compute_path
+        randomly selects algorithm each time). The pre-computed routes
+        are mainly for analysis purposes.
+        """
+        print(f"  Pre-computing routes for all 4 sub-algorithms...")
+        for algo_name, router in self.sub_routers.items():
+            print(f"    Computing {algo_name.upper()} routes...")
+            router.precompute_ground_station_routes()
+    
+    def set_weights(self, weights: Dict[str, float]):
+        """
+        Update algorithm selection weights.
+        
+        Args:
+            weights: New weights dict
+        """
+        total = sum(weights.values())
+        self.weights = {k: v/total for k, v in weights.items()}
+        self.algo_names = list(self.weights.keys())
+        self.algo_probs = np.array([self.weights[name] for name in self.algo_names])
+
+
 def create_router(
     router_type: str,
     constellation: LEOConstellation,
@@ -563,7 +781,7 @@ def create_router(
     Factory function to create router by type
     
     Args:
-    router_type: Type of router ("ksp", "kds", "kdg", "klo")
+    router_type: Type of router ("ksp", "kds", "kdg", "klo", "krand")
         constellation: LEO constellation topology
         **kwargs: Additional arguments for specific router types
         
@@ -574,7 +792,8 @@ def create_router(
         "ksp": KShortestPathsRouter,
         "kds": KDSRouter,
         "kdg": KDGRouter,
-        "klo": KLORouter
+        "klo": KLORouter,
+        "krand": KRandRouter
     }
     
     if router_type not in router_map:

@@ -1,0 +1,333 @@
+{
+  "target_isl": "SAT_4_2 <-> SAT_4_3",
+  "total_ground_stations": 38,
+  "algorithms": [
+    "KSP",
+    "KDS",
+    "KDG",
+    "KLO",
+    "kRAND"
+  ],
+  "cost_table": [
+    {
+      "ground_station": "GS_Auckland",
+      "KSP_cost": 0.0,
+      "KDS_cost": 21.67,
+      "KDG_cost": 31.48,
+      "KLO_cost": 21.67,
+      "kRAND_cost": 31.48
+    },
+    {
+      "ground_station": "GS_Bangkok",
+      "KSP_cost": 18.25,
+      "KDS_cost": 30.33,
+      "KDG_cost": 18.89,
+      "KLO_cost": 30.33,
+      "kRAND_cost": 30.33
+    },
+    {
+      "ground_station": "GS_Beijing",
+      "KSP_cost": 0.0,
+      "KDS_cost": 17.33,
+      "KDG_cost": 0.0,
+      "KLO_cost": 17.33,
+      "kRAND_cost": 17.33
+    },
+    {
+      "ground_station": "GS_Berlin",
+      "KSP_cost": 34.22,
+      "KDS_cost": 52.0,
+      "KDG_cost": 56.66,
+      "KLO_cost": 52.0,
+      "kRAND_cost": 56.66
+    },
+    {
+      "ground_station": "GS_Bogota",
+      "KSP_cost": 13.69,
+      "KDS_cost": 34.66,
+      "KDG_cost": 31.48,
+      "KLO_cost": 34.66,
+      "kRAND_cost": 34.66
+    },
+    {
+      "ground_station": "GS_BuenosAires",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_Cairo",
+      "KSP_cost": 38.78,
+      "KDS_cost": 30.33,
+      "KDG_cost": 37.77,
+      "KLO_cost": 30.33,
+      "kRAND_cost": 38.78
+    },
+    {
+      "ground_station": "GS_Chicago",
+      "KSP_cost": 54.75,
+      "KDS_cost": 82.33,
+      "KDG_cost": 94.43,
+      "KLO_cost": 82.33,
+      "kRAND_cost": 94.43
+    },
+    {
+      "ground_station": "GS_Delhi",
+      "KSP_cost": 31.94,
+      "KDS_cost": 34.66,
+      "KDG_cost": 44.07,
+      "KLO_cost": 34.66,
+      "kRAND_cost": 44.07
+    },
+    {
+      "ground_station": "GS_Dubai",
+      "KSP_cost": 34.22,
+      "KDS_cost": 34.66,
+      "KDG_cost": 44.07,
+      "KLO_cost": 34.66,
+      "kRAND_cost": 44.07
+    },
+    {
+      "ground_station": "GS_Houston",
+      "KSP_cost": 22.81,
+      "KDS_cost": 56.33,
+      "KDG_cost": 12.59,
+      "KLO_cost": 56.33,
+      "kRAND_cost": 56.33
+    },
+    {
+      "ground_station": "GS_Istanbul",
+      "KSP_cost": 38.78,
+      "KDS_cost": 43.33,
+      "KDG_cost": 37.77,
+      "KLO_cost": 43.33,
+      "kRAND_cost": 43.33
+    },
+    {
+      "ground_station": "GS_Johannesburg",
+      "KSP_cost": 0.0,
+      "KDS_cost": 17.33,
+      "KDG_cost": 0.0,
+      "KLO_cost": 17.33,
+      "kRAND_cost": 17.33
+    },
+    {
+      "ground_station": "GS_Lagos",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_Lima",
+      "KSP_cost": 0.0,
+      "KDS_cost": 34.66,
+      "KDG_cost": 31.48,
+      "KLO_cost": 34.66,
+      "kRAND_cost": 34.66
+    },
+    {
+      "ground_station": "GS_London",
+      "KSP_cost": 36.5,
+      "KDS_cost": 52.0,
+      "KDG_cost": 56.66,
+      "KLO_cost": 52.0,
+      "kRAND_cost": 56.66
+    },
+    {
+      "ground_station": "GS_LosAngeles",
+      "KSP_cost": 61.59,
+      "KDS_cost": 69.33,
+      "KDG_cost": 81.84,
+      "KLO_cost": 69.33,
+      "kRAND_cost": 81.84
+    },
+    {
+      "ground_station": "GS_Madrid",
+      "KSP_cost": 27.37,
+      "KDS_cost": 52.0,
+      "KDG_cost": 56.66,
+      "KLO_cost": 52.0,
+      "kRAND_cost": 56.66
+    },
+    {
+      "ground_station": "GS_Melbourne",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_MexicoCity",
+      "KSP_cost": 86.69,
+      "KDS_cost": 73.66,
+      "KDG_cost": 81.84,
+      "KLO_cost": 73.66,
+      "kRAND_cost": 86.69
+    },
+    {
+      "ground_station": "GS_Miami",
+      "KSP_cost": 68.44,
+      "KDS_cost": 69.33,
+      "KDG_cost": 69.25,
+      "KLO_cost": 69.33,
+      "kRAND_cost": 69.33
+    },
+    {
+      "ground_station": "GS_Moscow",
+      "KSP_cost": 38.78,
+      "KDS_cost": 43.33,
+      "KDG_cost": 37.77,
+      "KLO_cost": 43.33,
+      "kRAND_cost": 43.33
+    },
+    {
+      "ground_station": "GS_Mumbai",
+      "KSP_cost": 27.37,
+      "KDS_cost": 34.66,
+      "KDG_cost": 31.48,
+      "KLO_cost": 34.66,
+      "kRAND_cost": 34.66
+    },
+    {
+      "ground_station": "GS_Nairobi",
+      "KSP_cost": 36.5,
+      "KDS_cost": 21.67,
+      "KDG_cost": 31.48,
+      "KLO_cost": 21.67,
+      "kRAND_cost": 36.5
+    },
+    {
+      "ground_station": "GS_NewYork",
+      "KSP_cost": 79.84,
+      "KDS_cost": 78.0,
+      "KDG_cost": 94.43,
+      "KLO_cost": 78.0,
+      "kRAND_cost": 94.43
+    },
+    {
+      "ground_station": "GS_Paris",
+      "KSP_cost": 34.22,
+      "KDS_cost": 52.0,
+      "KDG_cost": 56.66,
+      "KLO_cost": 52.0,
+      "kRAND_cost": 56.66
+    },
+    {
+      "ground_station": "GS_Rome",
+      "KSP_cost": 11.41,
+      "KDS_cost": 43.33,
+      "KDG_cost": 0.0,
+      "KLO_cost": 43.33,
+      "kRAND_cost": 43.33
+    },
+    {
+      "ground_station": "GS_Santiago",
+      "KSP_cost": 0.0,
+      "KDS_cost": 21.67,
+      "KDG_cost": 0.0,
+      "KLO_cost": 21.67,
+      "kRAND_cost": 21.67
+    },
+    {
+      "ground_station": "GS_SaoPaulo",
+      "KSP_cost": 0.0,
+      "KDS_cost": 21.67,
+      "KDG_cost": 0.0,
+      "KLO_cost": 21.67,
+      "kRAND_cost": 21.67
+    },
+    {
+      "ground_station": "GS_Seattle",
+      "KSP_cost": 22.81,
+      "KDS_cost": 30.33,
+      "KDG_cost": 0.0,
+      "KLO_cost": 30.33,
+      "kRAND_cost": 30.33
+    },
+    {
+      "ground_station": "GS_Seoul",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_Shanghai",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_Singapore",
+      "KSP_cost": 9.12,
+      "KDS_cost": 26.0,
+      "KDG_cost": 18.89,
+      "KLO_cost": 26.0,
+      "kRAND_cost": 26.0
+    },
+    {
+      "ground_station": "GS_Stockholm",
+      "KSP_cost": 34.22,
+      "KDS_cost": 52.0,
+      "KDG_cost": 56.66,
+      "KLO_cost": 52.0,
+      "kRAND_cost": 56.66
+    },
+    {
+      "ground_station": "GS_Sydney",
+      "KSP_cost": 0.0,
+      "KDS_cost": 8.67,
+      "KDG_cost": 0.0,
+      "KLO_cost": 8.67,
+      "kRAND_cost": 8.67
+    },
+    {
+      "ground_station": "GS_TelAviv",
+      "KSP_cost": 38.78,
+      "KDS_cost": 30.33,
+      "KDG_cost": 37.77,
+      "KLO_cost": 30.33,
+      "kRAND_cost": 38.78
+    },
+    {
+      "ground_station": "GS_Tokyo",
+      "KSP_cost": 0.0,
+      "KDS_cost": 0.0,
+      "KDG_cost": 0.0,
+      "KLO_cost": 0.0,
+      "kRAND_cost": 0.0
+    },
+    {
+      "ground_station": "GS_Toronto",
+      "KSP_cost": 79.84,
+      "KDS_cost": 82.33,
+      "KDG_cost": 94.43,
+      "KLO_cost": 82.33,
+      "kRAND_cost": 94.43
+    }
+  ],
+  "totals": {
+    "KSP": 980.92,
+    "KDS": 1351.93,
+    "KDG": 1246.51,
+    "KLO": 1351.93,
+    "kRAND": 1501.76,
+    "kRAND_vs_min_fixed": 1.53,
+    "kRAND_vs_max_fixed": 1.11
+  },
+  "stations_involved_count": {
+    "KSP": 25,
+    "KDS": 32,
+    "KDG": 25,
+    "KLO": 32,
+    "kRAND": 32
+  }
+}
